@@ -634,3 +634,41 @@ body {
     font-style: italic;
     font-weight: 500;
 }
+
+/* 1. Vô hiệu hóa con trỏ chữ I cho toàn bộ trang web */
+html,
+body {
+    /* Ngăn người dùng bôi đen văn bản (tạo cảm giác như app cao cấp) */
+    user-select: none;
+    /* Buộc con trỏ luôn là hình mũi tên mặc định */
+    cursor: default;
+}
+
+/* 2. MỞ KHÓA cho các ô nhập liệu (Input, Textarea) */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+    /* Cho phép hiện con trỏ chữ I để người dùng biết chỗ này để gõ */
+    cursor: text;
+    /* Cho phép bôi đen để copy/paste trong ô nhập liệu */
+    user-select: text;
+}
+
+/* 3. MỞ KHÓA cho các thành phần tương tác (Nút, Link) */
+button,
+a,
+.menu-item,
+.music-card,
+i {
+    /* Hiện bàn tay chỉ vào khi rê qua các nút hoặc link */
+    cursor: pointer;
+}
+
+/* 4. MỞ KHÓA cho các đoạn nội dung cần thiết (Nếu có) */
+/* Ví dụ: Nếu đạo hữu muốn người dùng vẫn bôi đen được lời bài hát */
+.lyrics,
+.selectable-text {
+    user-select: text;
+    cursor: auto;
+}
