@@ -18,41 +18,52 @@
     </div>
 
     <div class="container">
+        <div class="lang-switch"
+            style="position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 0.9rem; color: #fff; z-index: 100;">
+            <span onclick="changeLanguage('vi')" id="btn-vi">VN</span> |
+            <span onclick="changeLanguage('en')" id="btn-en">EN</span>
+        </div>
+
         <div class="register-card">
             <div class="card-header">
                 <div class="sect-icon">
                     <i class="fa-solid fa-yin-yang"></i>
                 </div>
-                <h2>ĐĂNG NHẬP</h2>
-                <p>Xác nhận đạo tâm, tiếp tục hành trình tu luyện</p>
+                <h2 data-lang="login_header">LINH ĐÀI NHẬP CẢNH</h2>
+                <p data-lang="login_sub">Xác nhận đạo tâm, tiếp tục hành trình tu luyện</p>
             </div>
 
             <form id="loginForm">
                 <div class="input-box">
                     <i class="fa-solid fa-om"></i>
-                    <input type="text" id="username" placeholder="Đạo hiệu hoặc Email" required>
+                    <input type="text" id="username" data-lang-placeholder="user_placeholder"
+                        placeholder="Đạo hiệu hoặc Email" required>
                 </div>
 
                 <div class="input-box">
                     <i class="fa-solid fa-key"></i>
-                    <input type="password" id="password" placeholder="Mật pháp (Mật khẩu)" required>
+                    <input type="password" id="password" data-lang-placeholder="pass_placeholder"
+                        placeholder="Mật pháp (Mật khẩu)" required>
                 </div>
 
                 <div class="forgot-link" style="text-align: right; margin: -15px 5px 25px 0;">
-                    <a href="#" style="font-size: 0.75rem; color: #889; text-decoration: none;">Thất lạc mật pháp?</a>
+                    <a href="#" data-lang="forgot_pass"
+                        style="font-size: 0.75rem; color: #889; text-decoration: none;">Thất lạc mật pháp?</a>
                 </div>
 
                 <button type="submit" class="btn-ascend">
-                    <span>SẴN SÀNG</span>
+                    <span data-lang="login_btn">VẬN KHÍ NHẬP CẢNH</span>
                 </button>
             </form>
 
             <div class="card-footer">
-                Chưa có linh căn? <a href="register.html">Khai mở ngay</a>
+                <span data-lang="no_account">Chưa có linh căn?</span> <a href="register.html" data-lang="go_reg">Khai mở
+                    ngay</a>
             </div>
         </div>
     </div>
 
+    <script src="/js/lang.js"></script>
     <script src="/js/login.js"></script>
 </body>
 

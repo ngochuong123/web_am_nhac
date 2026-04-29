@@ -20,31 +20,31 @@
             <nav class="menu">
                 <div class="menu-item active">
                     <i class="fas fa-home"></i>
-                    <span>Trang chủ</span>
+                    <span data-lang="home_menu">Trang chủ</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-compass"></i>
-                    <span>Khám phá</span>
+                    <span data-lang="explore_menu">Khám phá</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-rss"></i>
-                    <span>Radio</span>
+                    <span data-lang="radio_menu">Radio</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-list-ul"></i>
-                    <span>Playlist</span>
+                    <span data-lang="playlist_menu">Playlist</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-music"></i>
-                    <span>Thư viện</span>
+                    <span data-lang="library_menu">Thư viện</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-heart"></i>
-                    <span>Yêu thích</span>
+                    <span data-lang="favorite_menu">Yêu thích</span>
                 </div>
                 <div class="menu-item">
                     <i class="fas fa-history"></i>
-                    <span>Lịch sử</span>
+                    <span data-lang="history_menu">Lịch sử</span>
                 </div>
             </nav>
         </aside>
@@ -52,20 +52,29 @@
         <main class="main-content">
             <header class="header">
                 <div class="top-nav">
-                    <span class="active">Trang chủ</span>
-                    <span>Khám phá</span>
-                    <span>Thể loại</span>
-                    <span>Nghệ thuật</span>
+                    <span class="active" data-lang="home_menu">Trang chủ</span>
+                    <span data-lang="explore_menu">Khám phá</span>
+                    <span data-lang="genre_menu">Thể loại</span>
+                    <span data-lang="artist_menu">Nghệ thuật</span>
                 </div>
                 <div class="header-right">
+                    <div class="lang-switch"
+                        style="margin-right: 15px; cursor: pointer; font-size: 0.8rem; color: #888;">
+                        <span onclick="changeLanguage('vi')" id="btn-vi">VN</span> |
+                        <span onclick="changeLanguage('en')" id="btn-en">EN</span>
+                    </div>
+
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Tìm kiếm bài hát, nghệ sĩ...">
+                        <input type="text" data-lang-placeholder="search_placeholder"
+                            placeholder="Tìm kiếm bài hát, nghệ sĩ...">
                     </div>
 
                     <div class="auth-buttons" id="auth-zone">
-                        <button class="btn-login" onclick="window.location.href='login.html'">Đăng nhập</button>
-                        <button class="btn-register" onclick="window.location.href='register.html'">Đăng ký</button>
+                        <button class="btn-login" data-lang="nav_login" onclick="window.location.href='login.html'">Đăng
+                            nhập</button>
+                        <button class="btn-register" data-lang="nav_register"
+                            onclick="window.location.href='register.html'">Đăng ký</button>
                     </div>
                 </div>
             </header>
@@ -76,22 +85,22 @@
                     <div class="hero-overlay"></div>
 
                     <div class="hero-content">
-                        <p class="hero-category">ÂM NHẠC</p>
-                        <h1 class="hero-title">KẾT NỐI THẾ GIỚI</h1>
-                        <p class="hero-description">
+                        <p class="hero-category" data-lang="hero_cat">ÂM NHẠC</p>
+                        <h1 class="hero-title" data-lang="hero_title">KẾT NỐI THẾ GIỚI</h1>
+                        <p class="hero-description" data-lang="hero_desc">
                             Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh,
                             kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới
                         </p>
                         <button class="btn-play-now">
-                            <i class="fas fa-play"></i> Khám phá ngay
+                            <i class="fas fa-play"></i> <span data-lang="explore_now">Khám phá ngay</span>
                         </button>
                     </div>
                 </div>
 
                 <section class="music-section">
                     <div class="section-header">
-                        <h2>GỢI Ý DÀNH CHO BẠN</h2>
-                        <span class="view-all">Xem tất cả</span>
+                        <h2 data-lang="suggest_title">GỢI Ý DÀNH CHO BẠN</h2>
+                        <span class="view-all" data-lang="view_all">Xem tất cả</span>
                     </div>
                     <div class="card-grid">
                         <div class="music-card">
@@ -113,8 +122,8 @@
 
                 <section class="music-section">
                     <div class="section-header">
-                        <h2>GẦN ĐÂY CỦA BẠN</h2>
-                        <span class="view-all">Xem tất cả</span>
+                        <h2 data-lang="recent_title">GẦN ĐÂY CỦA BẠN</h2>
+                        <span class="view-all" data-lang="view_all">Xem tất cả</span>
                     </div>
                     <div class="card-grid">
                         <div class="music-card">
@@ -130,8 +139,7 @@
 
         <aside class="right-panel">
             <div class="music-section">
-                <h2> <i class="fas fa-chart-line"></i> KHÁM PHÁ ÂM NHẠC
-                </h2>
+                <h2> <i class="fas fa-chart-line"></i> <span data-lang="chart_title">KHÁM PHÁ ÂM NHẠC</span></h2>
 
                 <div class="rank-list">
                     <div class="rank-item">
@@ -140,7 +148,7 @@
                             <h4>Châu Á</h4>
                             <p>Nguyên Anh Cao</p>
                         </div>
-                        <span class="rank-views">2,4 triệu</span>
+                        <span class="rank-views">2,4 <span data-lang="million">triệu</span></span>
 
                         <div class="play-btn-small">
                             <i class="fas fa-play"></i>
@@ -151,19 +159,22 @@
             </div>
 
             <div class="premium-box">
-                <h2>Gói Cao Cấp</h2>
-                <p>Trải nghiệm không giới hạn với chất lượng cao nhất</p>
-                <button class="btn-upgrade">Nâng cấp ngay</button>
+                <h2 data-lang="premium_title">Gói Cao Cấp</h2>
+                <p data-lang="premium_desc">Trải nghiệm không giới hạn với chất lượng cao nhất</p>
+                <button class="btn-upgrade" data-lang="upgrade_now">Nâng cấp ngay</button>
             </div>
         </aside>
     </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <i class="fas fa-yin-yang fa-spin"></i>
+            <p data-lang="logout_loading">Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
+        </div>
+    </div>
+
+    <script src="/js/lang.js"></script>
     <script src="/js/script.js"></script>
 </body>
-<div id="loading-overlay" class="loading-overlay">
-    <div class="loading-content">
-        <i class="fas fa-yin-yang fa-spin"></i>
-        <p>Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
-    </div>
-</div>
 
 </html>

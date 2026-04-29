@@ -247,3 +247,74 @@ i {
     user-select: text;
     cursor: auto;
 }
+
+/* --- TRẬN PHÁP CHUYỂN ĐỔI NGÔN NGỮ --- */
+.lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    /* Màu mờ mặc định */
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+    user-select: none;
+    /* Không cho bôi đen */
+    cursor: default;
+}
+
+.lang-switch span {
+    cursor: pointer;
+    /* Hiện bàn tay khi chỉ vào nút */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 2px 4px;
+}
+
+/* Hiệu ứng khi đang kích hoạt (Active) */
+.lang-switch span.active {
+    color: #00f2ff;
+    /* Màu xanh Cyan linh khí */
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.6),
+        0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+/* Hiệu ứng khi đưa chuột qua (Hover) */
+.lang-switch span:hover:not(.active) {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Thanh gạch đứng phân cách */
+.lang-switch .separator {
+    color: rgba(255, 255, 255, 0.1);
+    font-weight: 100;
+    cursor: default;
+    /* Không hiện bàn tay ở dấu | */
+}
+
+/* Hiệu ứng gạch chân mờ ảo khi Active */
+.lang-switch span.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00f2ff, transparent);
+    animation: glowLine 2s infinite;
+}
+
+@keyframes glowLine {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
