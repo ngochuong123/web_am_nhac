@@ -1,0 +1,211 @@
+:root {
+    --jade: #e0f2f1;
+    /* Xanh ngọc sương */
+    --cyan-glow: #00f2ff;
+    --mist-white: rgba(255, 255, 255, 0.8);
+    --void-purple: #4b0082;
+    --gold-dust: #ffd700;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0e14;
+    /* Nền tối sâu thẳm */
+    font-family: 'Segoe UI', serif;
+    overflow: hidden;
+}
+
+/* --- BACKGROUND TIÊN CẢNH --- */
+.xianxia-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Bạn có thể thay background-image bằng ảnh núi tiên mờ ảo */
+    background: radial-gradient(circle at center, #1a2a3a 0%, #05080a 100%);
+}
+
+.mist {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/clouds.png');
+    opacity: 0.1;
+    animation: mistMove 60s linear infinite;
+}
+
+@keyframes mistMove {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.qi-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.2;
+    animation: qiPulse 15s infinite alternate;
+}
+
+.glow-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--cyan-glow);
+    top: -10%;
+    left: -10%;
+}
+
+.glow-2 {
+    width: 400px;
+    height: 400px;
+    background: #9b59b6;
+    bottom: -5%;
+    right: -5%;
+    animation-delay: -5s;
+}
+
+@keyframes qiPulse {
+    from {
+        transform: scale(1) translate(0, 0);
+    }
+
+    to {
+        transform: scale(1.2) translate(50px, 30px);
+    }
+}
+
+/* --- REGISTER CARD (GLASSMORPHISM) --- */
+.register-card {
+    width: 400px;
+    padding: 50px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+
+.sect-icon {
+    font-size: 2.5rem;
+    color: var(--jade);
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px var(--cyan-glow));
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+h2 {
+    color: white;
+    letter-spacing: 6px;
+    font-weight: 300;
+    margin: 10px 0;
+}
+
+p {
+    color: #889;
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 40px;
+}
+
+/* --- INPUT FIELDS --- */
+.input-box {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #556;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.4s;
+    font-size: 0.9rem;
+}
+
+.input-box input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+}
+
+.input-box input:focus+i {
+    color: var(--cyan-glow);
+}
+
+/* --- ASCEND BUTTON --- */
+.btn-ascend {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #00f2ff, #70a1ff);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 15px;
+    box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
+}
+
+.btn-ascend:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 242, 255, 0.4);
+    filter: brightness(1.1);
+}
+
+.card-footer {
+    margin-top: 30px;
+    font-size: 0.85rem;
+    color: #667;
+}
+
+.card-footer a {
+    color: var(--jade);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: 0.3s;
+}
+
+.card-footer a:hover {
+    color: var(--cyan-glow);
+    border-bottom-color: var(--cyan-glow);
+}
