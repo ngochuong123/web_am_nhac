@@ -72,4 +72,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. NƠI ĐỂ BẠN THÊM CÁC CHỨC NĂNG KHÁC TRONG TƯƠNG LAI
+    const videoContainer = document.getElementById('transition-container');
+    const video = document.getElementById('transition-video');
+    const mist = document.getElementById('mist-swipe');
+
+    // Hàm thực hiện chuỗi hiệu ứng
+    function startDiscoveryTransition(targetUrl) {
+        // 1. Hiện container và chạy video
+        videoContainer.style.display = 'flex';
+        video.play();
+
+        // 2. Khi video gần kết thúc (hoặc kết thúc), chạy hiệu ứng sương mờ
+        video.onended = () => {
+            // Chạy hiệu ứng sương mờ
+            mist.classList.add('mist-active');
+
+            // 3. Sau khi sương chạy được một nửa (khoảng 0.8s), chuyển trang
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 800);
+        };
+    }
+
+    // --- GẮN SỰ KIỆN CHO CÁC NÚT ---
+
+    // 1. Nút Khám phá thanh bên trái (sidebar)
+    // Giả sử mục Khám phá là mục thứ 2 (index 1)
+    const sidebarExplore = document.querySelectorAll('.sidebar .menu-item')[1];
+    if (sidebarExplore) {
+        sidebarExplore.addEventListener('click', () => startDiscoveryTransition('explore.html'));
+    }
+
+    // 2. Nút Khám phá thanh trên (top nav)
+    const topNavExplore = document.querySelectorAll('.top-nav span')[1];
+    if (topNavExplore) {
+        topNavExplore.addEventListener('click', () => startDiscoveryTransition('explore.html'));
+    }
+
+    // 3. Nút Khám phá ngay (Hero Banner)
+    const heroBtn = document.querySelector('.btn-play-now');
+    if (heroBtn) {
+        heroBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            startDiscoveryTransition('explore.html');
+        });
+    }
 });

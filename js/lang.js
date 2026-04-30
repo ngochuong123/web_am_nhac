@@ -1,7 +1,7 @@
 // 1. TỪ ĐIỂN NGÔN NGỮ (DICTIONARY)
 const translations = {
     vi: {
-        // Menu Sidebar
+        // --- Menu Sidebar ---
         home_menu: "Trang chủ",
         explore_menu: "Khám phá",
         radio_menu: "Radio",
@@ -10,36 +10,36 @@ const translations = {
         favorite_menu: "Yêu thích",
         history_menu: "Lịch sử",
 
-        // Top Nav
+        // --- Top Nav ---
         genre_menu: "Thể loại",
         artist_menu: "Nghệ thuật",
 
-        // Header & Auth
+        // --- Header & Auth ---
         search_placeholder: "Tìm kiếm bài hát, nghệ sĩ...",
         nav_login: "Đăng nhập",
         nav_register: "Đăng ký",
-        logout: "Xuất thế", // Dùng cho nút logout sau này
-        hello: "Chào",     // Dùng cho câu chào sau khi đăng nhập
+        logout: "Xuất thế",
+        hello: "Chào",
 
-        // Hero Banner
+        // --- Hero Banner ---
         hero_cat: "ÂM NHẠC",
         hero_title: "KẾT NỐI THẾ GIỚI",
         hero_desc: "Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh, kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới",
         explore_now: "Khám phá ngay",
 
-        // Music Sections
+        // --- Music Sections ---
         suggest_title: "GỢI Ý DÀNH CHO BẠN",
         recent_title: "GẦN ĐÂY CỦA BẠN",
         view_all: "Xem tất cả",
         chart_title: "KHÁM PHÁ ÂM NHẠC",
         million: "triệu",
 
-        // Premium Box
+        // --- Premium Box ---
         premium_title: "Gói Cao Cấp",
         premium_desc: "Trải nghiệm không giới hạn với chất lượng cao nhất",
         upgrade_now: "Nâng cấp ngay",
 
-        // Effects
+        // --- Effects & Loading ---
         logout_loading: "Đang nghịch chuyển thời không, rời khỏi tiên cảnh...",
 
         // --- Trang Đăng Nhập (Login) ---
@@ -58,10 +58,23 @@ const translations = {
         confirm_pass: "Xác nhận mật pháp",
         reg_btn: "GIA NHẬP TIÊN MÔN",
         have_account: "Đã có cơ duyên?",
-        go_login: "Trở về đăng nhập"
+        go_login: "Trở về đăng nhập",
+
+        // --- Trang Khám Phá (Explore - PHẦN MỚI THÊM) ---
+        map_header: "ÂM LUẬT TỨ HẢI",
+        asia_label: "Đông Phương",
+        asia_name: "CHÂU Á",
+        europe_label: "Tây Dương",
+        europe_name: "CHÂU ÂU",
+        america_label: "Tân Thế Giới",
+        america_name: "CHÂU MỸ",
+        africa_label: "Hoang Mạc",
+        africa_name: "CHÂU PHI",
+        oceania_label: "Vạn Đảo",
+        oceania_name: "CHÂU ĐẠI DƯƠNG"
     },
     en: {
-        // Menu Sidebar
+        // --- Menu Sidebar ---
         home_menu: "Home",
         explore_menu: "Explore",
         radio_menu: "Radio",
@@ -70,36 +83,36 @@ const translations = {
         favorite_menu: "Favorite",
         history_menu: "History",
 
-        // Top Nav
+        // --- Top Nav ---
         genre_menu: "Genres",
         artist_menu: "Artists",
 
-        // Header & Auth
+        // --- Header & Auth ---
         search_placeholder: "Search songs, artists...",
         nav_login: "Login",
         nav_register: "Register",
         logout: "Logout",
         hello: "Hello",
 
-        // Hero Banner
+        // --- Hero Banner ---
         hero_cat: "MUSIC",
         hero_title: "CONNECT THE WORLD",
         hero_desc: "Admire the sound universe with celestial melodies, connecting your soul with wonderful music from around the world",
         explore_now: "Explore now",
 
-        // Music Sections
+        // --- Music Sections ---
         suggest_title: "SUGGESTED FOR YOU",
         recent_title: "YOUR RECENT",
         view_all: "View all",
         chart_title: "EXPLORE MUSIC",
         million: "million",
 
-        // Premium Box
+        // --- Premium Box ---
         premium_title: "Premium Plan",
         premium_desc: "Unlimited experience with the highest quality",
         upgrade_now: "Upgrade now",
 
-        // Effects
+        // --- Effects & Loading ---
         logout_loading: "Reversing space-time, leaving the celestial realm...",
 
         // --- Login ---
@@ -118,7 +131,20 @@ const translations = {
         confirm_pass: "Confirm Secret Code",
         reg_btn: "JOIN SECT",
         have_account: "Already an immortal?",
-        go_login: "Return to Gateway"
+        go_login: "Return to Gateway",
+
+        // --- Explore (NEW ADDITION) ---
+        map_header: "WORLD RHYTHMS",
+        asia_label: "Oriental",
+        asia_name: "ASIA",
+        europe_label: "Western",
+        europe_name: "EUROPE",
+        america_label: "New World",
+        america_name: "AMERICA",
+        africa_label: "Desert",
+        africa_name: "AFRICA",
+        oceania_label: "Archipelago",
+        oceania_name: "OCEANIA"
     }
 };
 
