@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải nhạc lên Tiên Giới - Diệu Âm Tiên Cảnh</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/upload.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="upload-container">
+        <a href="/" class="btn-back"><i class="fas fa-arrow-left"></i> Quay lại Tiên Cảnh</a>
+        
+        <div class="upload-card">
+            <div class="upload-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> TẢI NHẠC LÊN</h2>
+                <p>Truyền tống những giai điệu mới vào Diệu Âm Tiên Cảnh</p>
+            </div>
+
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Tên bài hát *</label>
+                    <input type="text" id="title" name="title" required placeholder="Nhập tên bài hát...">
+                </div>
+
+                <div class="form-group">
+                    <label>Ca sĩ / Đạo diễn *</label>
+                    <input type="text" id="artist" name="artist" required placeholder="Nhập tên người trình bày...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Thời lượng</label>
+                        <input type="text" id="duration" name="duration" placeholder="Ví dụ: 4:30">
+                    </div>
+                    <div class="form-group half">
+                        <label>Thể loại</label>
+                        <input type="text" id="genre" name="genre" placeholder="Ví dụ: V-Pop, Tiên Hiệp...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Châu lục (Nguồn gốc)</label>
+                    <select id="continent" name="continent">
+                        <option value="asia">Châu Á</option>
+                        <option value="europe">Châu Âu</option>
+                        <option value="america">Châu Mỹ</option>
+                        <option value="africa">Châu Phi</option>
+                        <option value="oceania">Châu Đại Dương</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Link Ảnh Bìa (Cover URL)</label>
+                    <input type="url" id="cover_url" name="cover_url" placeholder="https://.../anh-bia.jpg">
+                    <small>Nếu để trống sẽ dùng ảnh mặc định.</small>
+                </div>
+
+                <div class="form-group file-upload-group">
+                    <label>File Âm Thanh (MP3) *</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="audioFile" name="audioFile" accept="audio/mpeg, audio/mp3" required>
+                        <div class="file-upload-overlay">
+                            <i class="fas fa-file-audio"></i>
+                            <span id="file-name-display">Chưa chọn file nào</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-submit">
+                    <i class="fas fa-upload"></i> Truyền Tống Nhạc
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="upload-loading" class="loading-overlay">
+        <div class="loading-content">
+            <i class="fas fa-compact-disc fa-spin"></i>
+            <p>Đang ngưng tụ chân khí, đẩy nhạc lên mây...</p>
+            <span id="upload-progress">Vui lòng không đóng trang này!</span>
+        </div>
+    </div>
+
+    <script src="/js/upload.js"></script>
+</body>
+</html>

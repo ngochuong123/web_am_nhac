@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý Bài hát | Diệu Âm Tiên Cảnh</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .btn-add {
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .song-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .song-table th, .song-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .song-table th {
+            background: var(--sidebar-bg);
+            font-weight: bold;
+        }
+        .song-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-edit, .btn-delete {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-edit {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+        .btn-delete {
+            background: #ff4444;
+            color: #fff;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 5px;
+            background: var(--bg-dark);
+            color: var(--text-main);
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .btn-save {
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <%- include('partials/sidebar') %>
+
+        <main class="main-content">
+            <!-- HEADER -->
+            <%- include('partials/header') %>
+
+            <div class="admin-container">
+                <div class="admin-header">
+                    <h1>Quản lý Bài hát</h1>
+                    <button class="btn-add" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i> Thêm bài hát
+                    </button>
+                </div>
+
+                <table class="song-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tiêu đề</th>
+                            <th>Nghệ sĩ</th>
+                            <th>Thể loại</th>
+                            <th>Châu lục</th>
+                            <th>Lượt nghe</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="songTableBody">
+                        <% songs.forEach(song => { %>
+                        <tr data-id="<%= song.id %>">
+                            <td><%= song.id %></td>
+                            <td><%= song.title %></td>
+                            <td><%= song.artist %></td>
+                            <td><%= song.genre %></td>
+                            <td><%= song.continent %></td>
+                            <td><%= song.play_count.toLocaleString() %></td>
+                            <td class="song-actions">
+                                <button class="btn-edit" onclick="openEditModal(<%= song.id %>)">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </button>
+                                <button class="btn-delete" onclick="deleteSong(<%= song.id %>)">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal thêm/sửa bài hát -->
+    <div id="songModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Thêm bài hát mới</h2>
+            <form id="songForm">
+                <input type="hidden" id="songId" name="id">
+                
+                <div class="form-group">
+                    <label for="title">Tiêu đề:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="artist">Nghệ sĩ:</label>
+                    <input type="text" id="artist" name="artist" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration">Thời lượng (vd: 3:45):</label>
+                    <input type="text" id="duration" name="duration" placeholder="3:45" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="genre">Thể loại:</label>
+                    <input type="text" id="genre" name="genre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="continent">Châu lục:</label>
+                    <select id="continent" name="continent" required>
+                        <option value="asia">Châu Á</option>
+                        <option value="europe">Châu Âu</option>
+                        <option value="america">Châu Mỹ</option>
+                        <option value="africa">Châu Phi</option>
+                        <option value="oceania">Châu Đại Dương</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cover_url">URL ảnh bìa:</label>
+                    <input type="url" id="cover_url" name="cover_url" placeholder="https://...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="audio_url">URL file nhạc:</label>
+                    <input type="url" id="audio_url" name="audio_url" placeholder="https://...">
+                    <small style="color: var(--text-secondary); font-size: 0.8rem;">Hoặc upload file:</small>
+                    <input type="file" id="audio_file" name="audioFile" accept="audio/*">
+                </div>
+                
+                <div class="form-group">
+                    <label for="play_count">Lượt nghe:</label>
+                    <input type="number" id="play_count" name="play_count" value="0" min="0">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentSongId = null;
+
+        function openAddModal() {
+            currentSongId = null;
+            document.getElementById('modalTitle').textContent = 'Thêm bài hát mới';
+            document.getElementById('songForm').reset();
+            document.getElementById('songModal').style.display = 'flex';
+        }
+
+        function openEditModal(songId) {
+            currentSongId = songId;
+            document.getElementById('modalTitle').textContent = 'Sửa bài hát';
+            
+            // Lấy dữ liệu bài hát từ table
+            const row = document.querySelector(`tr[data-id="${songId}"]`);
+            const cells = row.querySelectorAll('td');
+            
+            document.getElementById('songId').value = songId;
+            document.getElementById('title').value = cells[1].textContent;
+            document.getElementById('artist').value = cells[2].textContent;
+            document.getElementById('genre').value = cells[3].textContent;
+            document.getElementById('continent').value = cells[4].textContent;
+            // Các field khác cần fetch từ API
+            
+            fetchSongDetails(songId);
+            document.getElementById('songModal').style.display = 'flex';
+        }
+
+        async function fetchSongDetails(songId) {
+            try {
+                const response = await fetch(`/api/songs/${songId}`);
+                const song = await response.json();
+                
+                document.getElementById('duration').value = song.duration;
+                document.getElementById('cover_url').value = song.cover_url;
+                document.getElementById('audio_url').value = song.audio_url;
+                document.getElementById('play_count').value = song.play_count;
+            } catch (err) {
+                console.error('Lỗi lấy chi tiết bài hát:', err);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('songModal').style.display = 'none';
+        }
+
+        document.getElementById('songForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const songData = Object.fromEntries(formData);
+            const audioFile = formData.get('audioFile');
+            
+            try {
+                let response;
+                const url = audioFile && audioFile.size > 0 ? '/api/upload-song' : '/api/songs';
+                
+                if (currentSongId) {
+                    // Update - tạm thời chỉ support URL
+                    response = await fetch(`/api/songs/${currentSongId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(songData)
+                    });
+                } else {
+                    // Create
+                    if (audioFile && audioFile.size > 0) {
+                        // Upload file
+                        const uploadData = new FormData();
+                        uploadData.append('title', songData.title);
+                        uploadData.append('artist', songData.artist);
+                        uploadData.append('duration', songData.duration);
+                        uploadData.append('genre', songData.genre);
+                        uploadData.append('continent', songData.continent);
+                        uploadData.append('cover_url', songData.cover_url);
+                        uploadData.append('audioFile', audioFile);
+                        
+                        response = await fetch(url, {
+                            method: 'POST',
+                            body: uploadData
+                        });
+                    } else {
+                        // URL
+                        response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(songData)
+                        });
+                    }
+                }
+                
+                if (response.ok) {
+                    closeModal();
+                    location.reload(); // Refresh page
+                } else {
+                    const error = await response.json();
+                    alert('Lỗi: ' + (error.message || 'Lỗi lưu bài hát'));
+                }
+            } catch (err) {
+                console.error('Lỗi:', err);
+                alert('Lỗi lưu bài hát');
+            }
+        });
+
+        async function deleteSong(songId) {
+            if (!confirm('Bạn có chắc muốn xóa bài hát này?')) return;
+            
+            try {
+                const response = await fetch(`/api/songs/${songId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    location.reload(); // Refresh page
+                } else {
+                    alert('Lỗi xóa bài hát');
+                }
+            } catch (err) {
+                console.error('Lỗi:', err);
+                alert('Lỗi xóa bài hát');
+            }
+        }
+
+        // Đóng modal khi click outside
+        document.getElementById('songModal').addEventListener('click', (e) => {
+            if (e.target.id === 'songModal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

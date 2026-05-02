@@ -1,0 +1,103 @@
+.explore-area {
+    padding: 20px;
+    background: #02050a;
+    min-height: 80vh;
+    display: block;
+}
+
+.world-map-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    position: relative;
+}
+
+.map-wrapper {
+    position: relative;
+    /* Làm gốc tọa độ cho các châu lục */
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.world-map-img {
+    width: 100%;
+    display: block;
+    /* Hiệu ứng màu xanh ngọc giống hình của đạo hữu */
+    filter: invert(45%) sepia(90%) saturate(1500%) hue-rotate(140deg) brightness(95%) contrast(105%);
+    opacity: 0.7;
+}
+
+/* Định dạng thẻ Châu Lục */
+.continent-item {
+    position: absolute;
+    /* Ghim lên bản đồ */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    z-index: 10;
+    transform: translate(-50%, -50%); /* Căn giữa điểm marker */
+}
+
+.continent-tag {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 6px 15px;
+    border-radius: 30px;
+    border: 1px solid #00f2ff;
+    font-size: 0.7rem;
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+    transition: 0.3s;
+}
+
+.pulse-point {
+    width: 8px;
+    height: 8px;
+    background: #00f2ff;
+    border-radius: 50%;
+    margin-top: 5px;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+/* TỌA ĐỘ CHUẨN - cố định trên bản đồ */
+.america {
+    top: 40%;
+    left: 22%;
+}
+
+.europe {
+    top: 28%;
+    left: 48%;
+}
+
+.africa {
+    top: 55%;
+    left: 50%;
+}
+
+.asia {
+    top: 32%;
+    left: 72%;
+}
+
+.oceania {
+    top: 68%;
+    left: 82%;
+}
+
+/* Hiệu ứng khi Hover */
+.continent-item:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.continent-item:hover .continent-tag {
+    background: #00f2ff;
+    color: #000;
+    box-shadow: 0 0 20px #00f2ff;
+}

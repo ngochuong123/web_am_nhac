@@ -1,0 +1,36 @@
+<header class="header">
+    <div class="top-nav">
+        <span data-lang="home_menu" onclick="window.location.href='/'"><i class="fas fa-home"></i> Trang chủ</span>
+        <span data-lang="explore_menu"><i class="fas fa-compass"></i> Khám phá</span>
+        <span data-lang="genre_menu"><i class="fas fa-music"></i> Thể loại</span>
+        <span data-lang="artist_menu"><i class="fas fa-user-astronaut"></i> Nghệ thuật</span>
+    </div>
+    <div class="header-right">
+        <div class="lang-switch"
+            style="margin-right: 15px; cursor: pointer; font-size: 0.8rem; color: #888;">
+            <span onclick="changeLanguage('vi')" id="btn-vi">VN</span> |
+            <span onclick="changeLanguage('en')" id="btn-en">EN</span>
+        </div>
+
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" data-lang-placeholder="search_placeholder"
+                placeholder="Tìm kiếm bài hát, nghệ sĩ...">
+        </div>
+
+        <div class="auth-buttons" id="auth-zone">
+            <% if (typeof user !== 'undefined' && user) { %>
+                <div class="user-profile">
+                    <span class="user-name">Chào, <%= user.username %> <i class="fas fa-crown" style="color: #fdd835; font-size: 0.8rem;"></i></span>
+                    <% if (user.role === 'admin') { %>
+                        <a href="/admin" style="color: var(--accent-cyan); margin-right: 10px; text-decoration: none;">Admin</a>
+                    <% } %>
+                    <button id="logout-btn" class="btn-logout" data-lang="logout">Xuất thế</button>
+                </div>
+            <% } else { %>
+                <button class="btn-login" data-lang="nav_login" onclick="window.location.href='/login'">Đăng nhập</button>
+                <button class="btn-register" data-lang="nav_register" onclick="window.location.href='/register'">Đăng ký</button>
+            <% } %>
+        </div>
+    </div>
+</header>
