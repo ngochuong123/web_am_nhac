@@ -1,0 +1,797 @@
+:root {
+    --bg-dark: #0a0e14;
+    --sidebar-bg: #0d121b;
+    --accent-cyan: #00f2ff;
+    --accent-yellow: #fdd835;
+    --card-bg: #161b22;
+    --text-main: #ffffff;
+    --text-gray: #a0a0a0;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    /* SỬA: Cho phép cuộn toàn trang */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    /* SỬA: Giúp Sticky Sidebar hoạt động đúng */
+    align-items: flex-start;
+}
+
+/* SIDEBAR LEFT */
+
+.sidebar {
+    width: 80px;
+    background-color: var(--sidebar-bg);
+    padding: 25px 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 10;
+}
+
+/* Logo Diệu Âm Tiên Cảnh */
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+.logo i {
+    font-size: 1.8rem;
+    color: var(--accent-cyan);
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+    margin-bottom: 8px;
+}
+
+.logo span {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+/* Menu Items */
+.menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 30px;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #5d6168;
+    /* Màu xám trầm mặc định */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    position: relative;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.menu-item i {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+    transition: 0.3s;
+}
+
+.menu-item span {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-align: center;
+    color: inherit;
+    /* Thừa hưởng màu từ menu-item */
+    transition: 0.3s;
+}
+
+/* Vạch sáng bên phải - Thiết lập chung cho cả Hover và Active */
+.menu-item::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 3px;
+    background: var(--accent-cyan);
+    border-radius: 4px 0 0 4px;
+    box-shadow: -2px 0 10px var(--accent-cyan);
+
+    /* Mặc định ẩn để tạo hiệu ứng hiện ra */
+    opacity: 0;
+    transform: translateX(3px);
+    transition: all 0.3s ease;
+}
+
+/* --- HIỆU ỨNG KHI DI CHUỘT (HOVER) --- */
+.menu-item:hover {
+    color: #ffffff;
+    /* Chữ sáng trắng khi rà chuột qua */
+}
+
+.menu-item:hover::after {
+    opacity: 0.5;
+    /* Vạch sáng hiện mờ khi hover */
+    transform: translateX(0);
+}
+
+/* --- TRẠNG THÁI KHI ĐƯỢC CHỌN (ACTIVE) --- */
+.menu-item.active {
+    color: var(--accent-cyan) !important;
+}
+
+.menu-item.active i {
+    filter: drop-shadow(0 0 8px var(--accent-cyan));
+}
+
+.menu-item.active span {
+    filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+.menu-item.active::after {
+    opacity: 1;
+    /* Vạch sáng hiện rõ nét */
+    transform: translateX(0);
+}
+
+/* Ẩn tiêu đề nhóm menu */
+.menu-header {
+    display: none;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    /* Chiếm tối đa không gian còn lại */
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 50px;
+    min-width: 0;
+    /* Quan trọng: Ngăn phần chính bị đẩy ra ngoài */
+}
+
+.right-panel {
+    width: 320px;
+    /* Cố định độ rộng vừa phải cho thanh bên phải */
+    flex-shrink: 0;
+    /* Không cho phép thanh này phình to ra */
+    padding: 20px;
+    background-color: var(--bg-dark);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-left: 1px solid #222;
+}
+
+/* Điều chỉnh lại vùng cuộn nội dung chính */
+.scroll-area {
+    padding: 20px 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- 1. HEADER & NAVIGATION --- */
+.header {
+    height: 60px;
+    /* Chiều cao gọn gàng */
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    background: rgba(10, 14, 20, 0.95);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.top-nav {
+    display: flex;
+    gap: 30px;
+    flex-shrink: 0;
+}
+
+.top-nav span {
+    font-size: 0.9rem;
+    color: #8a8e94;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.top-nav span:hover,
+.top-nav span.active {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.8), 0 0 20px rgba(0, 242, 255, 0.4);
+}
+
+/* --- 2. CỤM BÊN PHẢI (SEARCH + AUTH) --- */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+    flex: 1;
+    justify-content: flex-end;
+    max-width: 600px;
+}
+
+.search-bar {
+    position: relative;
+    flex: 1;
+    max-width: 350px;
+    min-width: 150px;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 0.9rem;
+    z-index: 2;
+}
+
+.search-bar input {
+    width: 100%;
+    background: #161b22;
+    border: 1px solid #30363d;
+    padding: 8px 15px 8px 42px;
+    border-radius: 30px;
+    color: white;
+    outline: none;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+.search-bar input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+}
+
+/* --- 3. AUTH BUTTONS --- */
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.auth-buttons .btn-login {
+    background: rgba(0, 255, 200, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-buttons .btn-login:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+    background: rgba(0, 242, 255, 0.2);
+}
+
+.auth-buttons .btn-register {
+    background: linear-gradient(to right, #00f2ff, #d4ff00);
+    border: none;
+    padding: 9px 22px;
+    border-radius: 25px;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.auth-buttons .btn-register:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(212, 255, 0, 0.4);
+}
+
+/* --- 4. HERO BANNER --- */
+.hero-banner {
+    position: relative;
+    height: 500px;
+    /* Trả lại chiều cao cũ */
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../images/hoangthiende1.png');
+    background-size: cover;
+    /* Hoặc 110% auto nếu bạn muốn ảnh to hơn nữa */
+    background-position: center;
+    text-align: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+/* Khôi phục màu vàng chữ ÂM NHẠC */
+.hero-category {
+    color: #fdd835;
+    letter-spacing: 4px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(253, 216, 53, 0.3);
+}
+
+.hero-title {
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #00f2ff 20%, #e1ff00 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.5));
+}
+
+.btn-play-now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #00f2ff, #0072ff);
+    border: none;
+    padding: 18px 55px;
+    border-radius: 50px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 210, 255, 0.4);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    gap: 12px;
+}
+
+.btn-play-now:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 210, 255, 0.6);
+    filter: brightness(1.1);
+}
+
+/* --- 5. RANKING & PREMIUM (RIGHT SIDE) --- */
+.music-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+
+    /* Màu xanh Cyan đặc trưng của Diệu Âm Tiên Cảnh */
+    color: #00f2ff !important;
+
+    /* Hiệu ứng phát sáng hào quang cho chữ */
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.6),
+        0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+/* --- THIẾT KẾ TIÊU ĐỀ GIỐNG ẢNH 2 --- */
+.ranking-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+
+    /* Màu xanh Cyan đặc trưng */
+    color: #00f2ff !important;
+
+    /* Hiệu ứng phát sáng nhẹ cho chữ */
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+}
+
+.music-section h2 i {
+    /* Màu vàng mảnh mai */
+    color: #fdd835 !important;
+    font-size: 1.25rem;
+
+    /* Xóa sạch mọi khung nền bị thừa từ ảnh 1 */
+    background: none !important;
+    padding: 0 !important;
+    border: none !important;
+
+    /* Hiệu ứng rực rỡ và độ nghiêng cho icon */
+    filter: drop-shadow(0 0 5px rgba(253, 216, 53, 0.6));
+    transform: rotate(-5deg) translateY(-2px);
+    display: inline-block;
+}
+
+.rank-item {
+    display: flex;
+    align-items: center;
+    background: #111720;
+    margin-bottom: 8px;
+    /* Giảm khoảng cách để gọn hơn */
+    padding: 8px 12px;
+    /* Thu hẹp padding */
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+    position: relative;
+    /* Để định vị nút Play */
+    cursor: pointer;
+}
+
+.rank-item:hover {
+    background: #1a222d;
+    transform: translateX(5px);
+}
+
+.rank-info h4 {
+    font-size: 0.9rem;
+    /* Chữ nhỏ lại cho gọn */
+    margin: 0;
+    color: #fff;
+}
+
+.rank-info p {
+    font-size: 0.75rem;
+    color: #888;
+    margin: 2px 0 0 0;
+}
+
+.play-btn-small {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #00f2ff, #0072ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 12px;
+    /* Nằm bên phải */
+
+    /* MẶC ĐỊNH ẨN */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+}
+
+.play-btn-small i {
+    color: #fff;
+    font-size: 0.7rem;
+    margin-left: 2px;
+    /* Căn giữa icon play */
+}
+
+.rank-item:hover .play-btn-small {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.rank-item:hover .rank-views {
+    opacity: 0;
+    /* Ẩn số lượt xem khi nút play hiện ra để tránh bị đè */
+}
+
+.rank-views {
+    transition: 0.3s;
+    font-size: 0.8rem;
+    color: #fdd835;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.rank-num {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.num-1 {
+    background: #fdd835;
+    color: #000;
+    box-shadow: 0 0 10px rgba(253, 216, 53, 0.3);
+}
+
+.num-2 {
+    background: #e0e0e0;
+    color: #000;
+}
+
+.num-3 {
+    background: #ce9052;
+    color: #000;
+}
+
+.premium-box {
+    margin-top: 30px;
+    background: linear-gradient(145deg, #0f151c, #070b10);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 242, 255, 0.15);
+    text-align: center;
+}
+
+.btn-upgrade {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(to right, #00f2ff, #d4ff00);
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    color: var(--accent-cyan);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+}
+
+.btn-logout {
+    background: transparent;
+    color: #ff4d4d;
+    /* Màu đỏ nhạt cho nút đăng xuất */
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 77, 77, 0.1);
+    border-color: #ff4d4d;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+}
+
+/* Màn hình load xuất thế */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    /* Màu trắng sương mù */
+    backdrop-filter: blur(15px);
+    display: none;
+    /* Mặc định ẩn */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+}
+
+.loading-content {
+    text-align: center;
+    color: #333;
+}
+
+.loading-content i {
+    font-size: 3rem;
+    color: #00f2ff;
+    /* Màu cyan linh khí */
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+}
+
+.loading-content p {
+    letter-spacing: 2px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* 1. Vô hiệu hóa con trỏ chữ I cho toàn bộ trang web */
+html,
+body {
+    /* Ngăn người dùng bôi đen văn bản (tạo cảm giác như app cao cấp) */
+    user-select: none;
+    /* Buộc con trỏ luôn là hình mũi tên mặc định */
+    cursor: default;
+}
+
+/* 2. MỞ KHÓA cho các ô nhập liệu (Input, Textarea) */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+    /* Cho phép hiện con trỏ chữ I để người dùng biết chỗ này để gõ */
+    cursor: text;
+    /* Cho phép bôi đen để copy/paste trong ô nhập liệu */
+    user-select: text;
+}
+
+/* 3. MỞ KHÓA cho các thành phần tương tác (Nút, Link) */
+button,
+a,
+.menu-item,
+.music-card,
+i {
+    /* Hiện bàn tay chỉ vào khi rê qua các nút hoặc link */
+    cursor: pointer;
+}
+
+/* 4. MỞ KHÓA cho các đoạn nội dung cần thiết (Nếu có) */
+/* Ví dụ: Nếu đạo hữu muốn người dùng vẫn bôi đen được lời bài hát */
+.lyrics,
+.selectable-text {
+    user-select: text;
+    cursor: auto;
+}
+
+/* --- TRẬN PHÁP CHUYỂN ĐỔI NGÔN NGỮ --- */
+.lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    /* Màu mờ mặc định */
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+    user-select: none;
+    /* Không cho bôi đen */
+    cursor: default;
+}
+
+.lang-switch span {
+    cursor: pointer;
+    /* Hiện bàn tay khi chỉ vào nút */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 2px 4px;
+}
+
+/* Hiệu ứng khi đang kích hoạt (Active) */
+.lang-switch span.active {
+    color: #00f2ff;
+    /* Màu xanh Cyan linh khí */
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.6),
+        0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+/* Hiệu ứng khi đưa chuột qua (Hover) */
+.lang-switch span:hover:not(.active) {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Thanh gạch đứng phân cách */
+.lang-switch .separator {
+    color: rgba(255, 255, 255, 0.1);
+    font-weight: 100;
+    cursor: default;
+    /* Không hiện bàn tay ở dấu | */
+}
+
+/* Hiệu ứng gạch chân mờ ảo khi Active */
+.lang-switch span.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00f2ff, transparent);
+    animation: glowLine 2s infinite;
+}
+
+@keyframes glowLine {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Container bao phủ toàn màn hình */
+.transition-container {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    /* Mặc định ẩn */
+    background: #000;
+    align-items: center;
+    justify-content: center;
+}
+
+#transition-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Hiệu ứng sương mờ chạy ngang */
+.mist-swipe {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    /* Bắt đầu từ bên trái ngoài màn hình */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.8),
+            #fff,
+            rgba(255, 255, 255, 0.8),
+            transparent);
+    filter: blur(50px);
+    z-index: 100000;
+    pointer-events: none;
+}
+
+/* Animation sương chạy từ trái sang phải */
+@keyframes mistRun {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.mist-active {
+    animation: mistRun 1.5s ease-in-out forwards;
+}

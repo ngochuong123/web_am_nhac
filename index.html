@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diệu Âm Tiên Cảnh - Giao diện nghe nhạc</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <span>DIỆU ÂM <br>TIÊN CẢNH</span>
+            </div>
+            <nav class="menu">
+                <div class="menu-item active">
+                    <i class="fas fa-home"></i>
+                    <span data-lang="home_menu">Trang chủ</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-compass"></i>
+                    <span data-lang="explore_menu">Khám phá</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-rss"></i>
+                    <span data-lang="radio_menu">Radio</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-list-ul"></i>
+                    <span data-lang="playlist_menu">Playlist</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-music"></i>
+                    <span data-lang="library_menu">Thư viện</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    <span data-lang="favorite_menu">Yêu thích</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span data-lang="history_menu">Lịch sử</span>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="top-nav">
+                    <span class="active" data-lang="home_menu">Trang chủ</span>
+                    <span data-lang="explore_menu">Khám phá</span>
+                    <span data-lang="genre_menu">Thể loại</span>
+                    <span data-lang="artist_menu">Nghệ thuật</span>
+                </div>
+                <div class="header-right">
+                    <div class="lang-switch"
+                        style="margin-right: 15px; cursor: pointer; font-size: 0.8rem; color: #888;">
+                        <span onclick="changeLanguage('vi')" id="btn-vi">VN</span> |
+                        <span onclick="changeLanguage('en')" id="btn-en">EN</span>
+                    </div>
+
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" data-lang-placeholder="search_placeholder"
+                            placeholder="Tìm kiếm bài hát, nghệ sĩ...">
+                    </div>
+
+                    <div class="auth-buttons" id="auth-zone">
+                        <button class="btn-login" data-lang="nav_login" onclick="window.location.href='login.html'">Đăng
+                            nhập</button>
+                        <button class="btn-register" data-lang="nav_register"
+                            onclick="window.location.href='register.html'">Đăng ký</button>
+                    </div>
+                </div>
+            </header>
+
+            <section class="scroll-area">
+
+                <div class="hero-banner">
+                    <div class="hero-overlay"></div>
+
+                    <div class="hero-content">
+                        <p class="hero-category" data-lang="hero_cat">ÂM NHẠC</p>
+                        <h1 class="hero-title" data-lang="hero_title">KẾT NỐI THẾ GIỚI</h1>
+                        <p class="hero-description" data-lang="hero_desc">
+                            Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh,
+                            kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới
+                        </p>
+                        <button class="btn-play-now">
+                            <i class="fas fa-play"></i> <span data-lang="explore_now">Khám phá ngay</span>
+                        </button>
+                    </div>
+                </div>
+
+                <section class="music-section">
+                    <div class="section-header">
+                        <h2 data-lang="suggest_title">GỢI Ý DÀNH CHO BẠN</h2>
+                        <span class="view-all" data-lang="view_all">Xem tất cả</span>
+                    </div>
+                    <div class="card-grid">
+                        <div class="music-card">
+                            <div class="card-img" style="background-image: url('song1.jpg');">
+                                <div class="play-overlay"><i class="fas fa-play"></i></div>
+                            </div>
+                            <h3>Châu Á</h3>
+                            <p>Nguyên Anh Cao</p>
+                            <span class="duration">4:12</span>
+                        </div>
+                        <div class="music-card">
+                            <div class="card-img" style="background-image: url('song2.jpg');"></div>
+                            <h3>Bạc Mỹ</h3>
+                            <p>Huyền Anh Lâm</p>
+                            <span class="duration">3:48</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="music-section">
+                    <div class="section-header">
+                        <h2 data-lang="recent_title">GẦN ĐÂY CỦA BẠN</h2>
+                        <span class="view-all" data-lang="view_all">Xem tất cả</span>
+                    </div>
+                    <div class="card-grid">
+                        <div class="music-card">
+                            <div class="card-img" style="background-image: url('song1.jpg');"></div>
+                            <h3>Châu Âu</h3>
+                            <p>Vũ Thành Tuấn</p>
+                            <span class="duration">5:03</span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+
+        <aside class="right-panel">
+            <div class="music-section">
+                <h2> <i class="fas fa-chart-line"></i> <span data-lang="chart_title">KHÁM PHÁ ÂM NHẠC</span></h2>
+
+                <div class="rank-list">
+                    <div class="rank-item">
+                        <span class="rank-num num-1">1</span>
+                        <div class="rank-info">
+                            <h4>Châu Á</h4>
+                            <p>Nguyên Anh Cao</p>
+                        </div>
+                        <span class="rank-views">2,4 <span data-lang="million">triệu</span></span>
+
+                        <div class="play-btn-small">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="premium-box">
+                <h2 data-lang="premium_title">Gói Cao Cấp</h2>
+                <p data-lang="premium_desc">Trải nghiệm không giới hạn với chất lượng cao nhất</p>
+                <button class="btn-upgrade" data-lang="upgrade_now">Nâng cấp ngay</button>
+            </div>
+        </aside>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <i class="fas fa-yin-yang fa-spin"></i>
+            <p data-lang="logout_loading">Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
+        </div>
+    </div>
+    <div id="transition-container" class="transition-container">
+        <video id="transition-video" preload="auto">
+            <source src="/images/demo.mp4" type="video/mp4">
+        </video>
+
+        <div id="mist-swipe" class="mist-swipe"></div>
+    </div>
+    <script src="/js/lang.js"></script>
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

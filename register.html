@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Nhập Tiên Môn | Diệu Âm Tiên Cảnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+
+<body>
+
+    <div class="xianxia-bg">
+        <div class="mist"></div>
+        <div class="qi-glow glow-1"></div>
+        <div class="qi-glow glow-2"></div>
+    </div>
+
+    <div class="container">
+        <div class="lang-switch"
+            style="position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 0.9rem; color: #fff; z-index: 100;">
+            <span onclick="changeLanguage('vi')" id="btn-vi">VN</span> |
+            <span onclick="changeLanguage('en')" id="btn-en">EN</span>
+        </div>
+
+        <div class="register-card">
+            <div class="card-header">
+                <div class="sect-icon">
+                    <i class="fa-solid fa-scroll"></i>
+                </div>
+                <h2 data-lang="reg_header">KHAI MỞ LINH CĂN</h2>
+                <p data-lang="reg_sub">Khắc tên vào thương khung, khởi đầu lộ trình tìm kiếm âm luật</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="input-box">
+                    <i class="fa-solid fa-user-pen"></i>
+                    <input type="text" id="username" data-lang-placeholder="user_placeholder"
+                        placeholder="Đạo hiệu (Tên tài khoản)" required>
+                </div>
+
+                <div class="input-box">
+                    <i class="fa-solid fa-feather"></i>
+                    <input type="email" id="email" data-lang-placeholder="email_placeholder"
+                        placeholder="Phúc địa (Email)" required>
+                </div>
+
+                <div class="input-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input type="password" id="password" data-lang-placeholder="pass_placeholder"
+                        placeholder="Mật pháp (Mật khẩu)" required>
+                </div>
+
+                <div class="input-box">
+                    <i class="fa-solid fa-fingerprint"></i>
+                    <input type="password" id="confirmPassword" data-lang-placeholder="confirm_pass"
+                        placeholder="Xác nhận mật pháp" required>
+                </div>
+
+                <button type="submit" class="btn-ascend">
+                    <span data-lang="reg_btn">GIA NHẬP TIÊN MÔN</span>
+                </button>
+            </form>
+
+            <div class="card-footer">
+                <span data-lang="have_account">Đã có tài khoản?</span> <a href="login.html" data-lang="go_login">Trở về
+                    đăng nhập</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/lang.js"></script>
+    <script src="/js/register.js"></script>
+</body>
+
+</html>
