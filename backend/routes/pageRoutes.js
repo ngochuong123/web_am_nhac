@@ -3,29 +3,19 @@ const router = express.Router();
 const db = require('../database'); // Sử dụng pool từ database.js mới
 
 // Trang chủ
-// backend/routes/pageRoutes.js
 router.get('/', async (req, res) => {
     try {
-        // Gọi Promise.all mà KHÔNG bóc tách dấu [ ] ở vế trái
         const results = await Promise.all([
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'),
             db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
         ]);
-
-        // Kiểm tra Logs để xem dữ liệu thực tế (Chỉ hiện ở terminal Render)
-        console.log('Kiểm tra dữ liệu:', Array.isArray(results[0]));
-
         res.render('index', {
-            // results[0] chính là mảng trả về từ câu lệnh SQL đầu tiên
-            suggestedSongs: results[0] || [],
+            suggestedSongs: results[0] || [], // results[0] đã là mảng
             recentSongs: results[1] || [],
             chartSongs: results[2] || []
         });
-    } catch (err) {
-        console.error('Lỗi Trang chủ:', err);
-        res.status(500).send('Lỗi hệ thống Tiên Giới');
-    }
+    } catch (err) { res.status(500).send('Lỗi Tiên Giới'); }
 });
 
 // Trang đăng nhập (Giữ nguyên logic)
@@ -45,21 +35,13 @@ router.get('/explore', async (req, res) => {
     try {
         const songsByContinent = {};
         const continents = ['asia', 'europe', 'america', 'africa', 'oceania'];
-
-        // Chạy vòng lặp lấy nhạc theo từng châu lục
         await Promise.all(continents.map(async (continent) => {
-            const [rows] = await db.query(
-                'SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC',
-                [continent]
-            );
+            // KHÔNG dùng [rows], dùng thẳng rows
+            const rows = await db.query('SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC', [continent]);
             songsByContinent[continent] = rows;
         }));
-
         res.render('explore', { songsByContinent });
-    } catch (err) {
-        console.error('Lỗi Trang khám phá:', err);
-        res.redirect('/');
-    }
+    } catch (err) { res.redirect('/'); }
 });
 
 // Trang upload nhạc
@@ -71,31 +53,22 @@ router.get('/upload', (req, res) => {
 // Trang admin quản lý bài hát
 router.get('/admin', async (req, res) => {
     try {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.redirect('/');
-        }
-        const [songs] = await db.query('SELECT * FROM songs ORDER BY created_at DESC');
+        if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/');
+        const songs = await db.query('SELECT * FROM songs ORDER BY created_at DESC'); // Bỏ dấu []
         res.render('admin', { songs });
-    } catch (err) {
-        res.redirect('/');
-    }
+    } catch (err) { res.redirect('/'); }
 });
 
 // Trang tìm kiếm
 router.get('/search', async (req, res) => {
     try {
-        const query = req.query.q || '';
-        const [songs] = await db.query(
+        const queryStr = req.query.q || '';
+        const songs = await db.query( // Bỏ dấu []
             'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ? ORDER BY play_count DESC',
-            [`%${query}%`, `%${query}%`, `%${query}%`]
+            [`%${queryStr}%`, `%${queryStr}%`, `%${queryStr}%`]
         );
-        res.render('list', {
-            listTitle: `Kết quả tìm kiếm cho: "${query}"`,
-            songs
-        });
-    } catch (err) {
-        res.redirect('/');
-    }
+        res.render('list', { listTitle: `Kết quả cho: "${queryStr}"`, songs });
+    } catch (err) { res.redirect('/'); }
 });
 
 // Trang lịch sử nghe nhạc
