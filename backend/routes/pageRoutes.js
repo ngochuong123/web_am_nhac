@@ -1,156 +1,181 @@
 const express = require('express');
 const router = express.Router();
-const { all } = require('../database');
+const db = require('../database'); // Sử dụng pool từ database.js mới
 
 // Trang chủ
-router.get('/', (req, res) => {
-    const suggestedSongs = all(
-        'SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'
-    );
+router.get('/', async (req, res) => {
+    try {
+        // Sử dụng Promise.all để chạy 3 câu lệnh SQL cùng lúc cho nhanh
+        const [suggestedResults, recentResults, chartResults] = await Promise.all([
+            db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'),
+            db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
+            db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
+        ]);
 
-    const recentSongs = all(
-        'SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'
-    );
-
-    const chartSongs = all(
-        'SELECT * FROM songs ORDER BY play_count DESC LIMIT 5'
-    );
-
-    res.render('index', {
-        suggestedSongs,
-        recentSongs,
-        chartSongs
-    });
+        res.render('index', {
+            suggestedSongs: suggestedResults[0],
+            recentSongs: recentResults[0],
+            chartSongs: chartResults[0]
+        });
+    } catch (err) {
+        console.error('Lỗi Trang chủ:', err);
+        res.status(500).send('Lỗi hệ thống Tiên Giới');
+    }
 });
 
-// Trang đăng nhập
+// Trang đăng nhập (Giữ nguyên logic)
 router.get('/login', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/');
-    }
+    if (req.session.user) return res.redirect('/');
     res.render('login', { error: null });
 });
 
-// Trang đăng ký
+// Trang đăng ký (Giữ nguyên logic)
 router.get('/register', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/');
-    }
+    if (req.session.user) return res.redirect('/');
     res.render('register', { error: null });
 });
 
 // Trang khám phá
-router.get('/explore', (req, res) => {
-    const songsByContinent = {};
-    const continents = ['asia', 'europe', 'america', 'africa', 'oceania'];
+router.get('/explore', async (req, res) => {
+    try {
+        const songsByContinent = {};
+        const continents = ['asia', 'europe', 'america', 'africa', 'oceania'];
 
-    continents.forEach(continent => {
-        songsByContinent[continent] = all(
-            'SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC',
-            [continent]
-        );
-    });
+        // Chạy vòng lặp lấy nhạc theo từng châu lục
+        await Promise.all(continents.map(async (continent) => {
+            const [rows] = await db.query(
+                'SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC',
+                [continent]
+            );
+            songsByContinent[continent] = rows;
+        }));
 
-    res.render('explore', { songsByContinent });
+        res.render('explore', { songsByContinent });
+    } catch (err) {
+        console.error('Lỗi Trang khám phá:', err);
+        res.redirect('/');
+    }
 });
 
 // Trang upload nhạc
 router.get('/upload', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
+    if (!req.session.user) return res.redirect('/login');
     res.render('upload');
 });
 
 // Trang admin quản lý bài hát
-router.get('/admin', (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/');
+router.get('/admin', async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.redirect('/');
+        }
+        const [songs] = await db.query('SELECT * FROM songs ORDER BY created_at DESC');
+        res.render('admin', { songs });
+    } catch (err) {
+        res.redirect('/');
     }
-    const songs = all('SELECT * FROM songs ORDER BY created_at DESC');
-    res.render('admin', { songs });
 });
 
-// =============================================
-// CÁC TRANG DANH SÁCH (Tìm kiếm, Lịch sử, Yêu thích)
-// =============================================
-
 // Trang tìm kiếm
-router.get('/search', (req, res) => {
-    const query = req.query.q || '';
-    const songs = all(
-        'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ? ORDER BY play_count DESC',
-        [`%${query}%`, `%${query}%`, `%${query}%`]
-    );
-    res.render('list', { 
-        listTitle: `Kết quả tìm kiếm cho: "${query}"`, 
-        songs 
-    });
+router.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q || '';
+        const [songs] = await db.query(
+            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ? ORDER BY play_count DESC',
+            [`%${query}%`, `%${query}%`, `%${query}%`]
+        );
+        res.render('list', {
+            listTitle: `Kết quả tìm kiếm cho: "${query}"`,
+            songs
+        });
+    } catch (err) {
+        res.redirect('/');
+    }
 });
 
 // Trang lịch sử nghe nhạc
-router.get('/history', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
+router.get('/history', async (req, res) => {
+    try {
+        if (!req.session.user) return res.redirect('/login');
+
+        const [songs] = await db.query(
+            `SELECT s.* FROM songs s 
+             JOIN play_history h ON s.id = h.song_id 
+             WHERE h.user_id = ? 
+             ORDER BY h.played_at DESC LIMIT 100`,
+            [req.session.user.id]
+        );
+
+        // Xóa trùng lặp trong bộ nhớ
+        const uniqueSongs = songs.filter((song, index, self) =>
+            index === self.findIndex((t) => t.id === song.id)
+        ).slice(0, 50);
+
+        res.render('list', {
+            listTitle: 'Lịch sử nghe nhạc (Gần đây nhất)',
+            songs: uniqueSongs
+        });
+    } catch (err) {
+        res.redirect('/');
     }
-    const songs = all(
-        `SELECT s.* FROM songs s 
-         JOIN play_history h ON s.id = h.song_id 
-         WHERE h.user_id = ? 
-         ORDER BY h.played_at DESC LIMIT 50`,
-        [req.session.user.id]
-    );
-    // Xóa trùng lặp (nếu nghe 1 bài nhiều lần, chỉ hiện 1 lần)
-    const uniqueSongs = songs.filter((song, index, self) =>
-        index === self.findIndex((t) => t.id === song.id)
-    );
-    
-    res.render('list', { 
-        listTitle: 'Lịch sử nghe nhạc (Gần đây nhất)', 
-        songs: uniqueSongs 
-    });
 });
 
 // Trang yêu thích
-router.get('/favorites', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
+router.get('/favorites', async (req, res) => {
+    try {
+        if (!req.session.user) return res.redirect('/login');
+
+        const [songs] = await db.query(
+            `SELECT s.* FROM songs s 
+             JOIN favorites f ON s.id = f.song_id 
+             WHERE f.user_id = ? 
+             ORDER BY f.created_at DESC`,
+            [req.session.user.id]
+        );
+        res.render('list', {
+            listTitle: 'Bài hát Yêu thích',
+            songs
+        });
+    } catch (err) {
+        res.redirect('/');
     }
-    const songs = all(
-        `SELECT s.* FROM songs s 
-         JOIN favorites f ON s.id = f.song_id 
-         WHERE f.user_id = ? 
-         ORDER BY f.created_at DESC`,
-        [req.session.user.id]
-    );
-    res.render('list', { 
-        listTitle: 'Bài hát Yêu thích', 
-        songs 
-    });
 });
 
 // Trang thể loại / nghệ sĩ
-router.get('/category/:type', (req, res) => {
-    const type = req.params.type;
-    let categories = [];
-    
-    if (type === 'genre') {
-        const groups = all('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
-        categories = groups.map(g => ({
-            name: g.name,
-            count: g.count,
-            songs: all('SELECT * FROM songs WHERE genre = ? LIMIT 5', [g.name])
+router.get('/category/:type', async (req, res) => {
+    try {
+        const type = req.params.type;
+        let groups = [];
+
+        if (type === 'genre') {
+            const [rows] = await db.query('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
+            groups = rows;
+        } else if (type === 'artist') {
+            const [rows] = await db.query('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
+            groups = rows;
+        } else {
+            return res.redirect('/');
+        }
+
+        // Lấy 5 bài hát cho mỗi danh mục
+        const categories = await Promise.all(groups.map(async g => {
+            const [songs] = await db.query(
+                `SELECT * FROM songs WHERE ${type} = ? LIMIT 5`,
+                [g.name]
+            );
+            return {
+                name: g.name,
+                count: g.count,
+                songs: songs
+            };
         }));
-        res.render('category', { pageTitle: 'Thể Loại', categories });
-    } else if (type === 'artist') {
-        const groups = all('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
-        categories = groups.map(g => ({
-            name: g.name,
-            count: g.count,
-            songs: all('SELECT * FROM songs WHERE artist = ? LIMIT 5', [g.name])
-        }));
-        res.render('category', { pageTitle: 'Nghệ Sĩ', categories });
-    } else {
+
+        res.render('category', {
+            pageTitle: type === 'genre' ? 'Thể Loại' : 'Nghệ Sĩ',
+            categories
+        });
+    } catch (err) {
+        console.error('Lỗi Category:', err);
         res.redirect('/');
     }
 });

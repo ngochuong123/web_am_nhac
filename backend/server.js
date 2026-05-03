@@ -3,12 +3,12 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const { initDatabase } = require('./database');
+const { initDatabase } = require('./database'); // Hàm initDatabase mới từ database.js
 const pageRoutes = require('./routes/pageRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Ưu tiên lấy cổng từ môi trường (cần thiết khi lên Render)
 
 // =============================================
 // MIDDLEWARE
@@ -25,12 +25,12 @@ app.use(express.urlencoded({ extended: true }));
 // Static files - serve từ thư mục frontend/
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// Static files - serve uploaded audio từ backend/public/
+// Static files - serve uploaded audio từ backend/public/ (Dành cho dev local)
 app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
 
 // Session
 app.use(session({
-    secret: 'dieu-am-tien-canh-secret-key-2024',
+    secret: process.env.SESSION_SECRET || 'dieu-am-tien-canh-secret-key-2024',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -59,16 +59,22 @@ app.use('/api', apiRoutes);
 // =============================================
 
 async function startServer() {
-    await initDatabase(bcrypt);
+    try {
+        // Khởi tạo kết nối tới MySQL Aiven
+        // Không cần truyền bcrypt nữa vì logic seed đã nằm trong Workbench
+        await initDatabase();
 
-    app.listen(PORT, () => {
-        console.log(`\n🎵 ═══════════════════════════════════════`);
-        console.log(`   DIỆU ÂM TIÊN CẢNH - Server đã khởi động`);
-        console.log(`   🌐 http://localhost:${PORT}`);
-        console.log(`   📁 Backend:  /backend`);
-        console.log(`   📁 Frontend: /frontend`);
-        console.log(`🎵 ═══════════════════════════════════════\n`);
-    });
+        app.listen(PORT, () => {
+            console.log(`\n🎵 ═══════════════════════════════════════`);
+            console.log(`   DIỆU ÂM TIÊN CẢNH - Đạo giới đã mở cổng`);
+            console.log(`   🌐 Server: http://localhost:${PORT}`);
+            console.log(`   💎 Database: MySQL Aiven (Cloud)`);
+            console.log(`🎵 ═══════════════════════════════════════\n`);
+        });
+    } catch (err) {
+        console.error('❌ Không thể khởi động đạo giới do lỗi Database:', err.message);
+        process.exit(1); // Dừng server nếu không kết nối được DB
+    }
 }
 
 startServer();
