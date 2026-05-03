@@ -187,11 +187,15 @@ router.post('/upload-song', upload.single('audioFile'), async (req, res) => {
 // =============================================
 // LƯU LỊCH SỬ NGHE NHẠC
 // =============================================
+// Lưu lịch sử khi bài hát được chạy (POST)
 router.post('/history/:id', async (req, res) => {
     try {
         const songId = req.params.id;
+
+        // Tăng lượt nghe (Dùng db.execute)
         await db.execute('UPDATE songs SET play_count = play_count + 1 WHERE id = ?', [songId]);
 
+        // Nếu đạo hữu đã đăng nhập thì mới lưu vào bảng play_history
         if (req.session.user) {
             await db.execute(
                 'INSERT INTO play_history (user_id, song_id) VALUES (?, ?)',
@@ -200,6 +204,7 @@ router.post('/history/:id', async (req, res) => {
         }
         res.json({ success: true });
     } catch (err) {
+        console.error('Lỗi lưu lịch sử:', err);
         res.status(500).json({ success: false });
     }
 });
@@ -229,7 +234,7 @@ router.post('/favorite/:id', async (req, res) => {
         const userId = req.session.user.id;
         const songId = req.params.id;
 
-        const [existing] = await db.execute(
+        const existing = await db.execute(
             'SELECT id FROM favorites WHERE user_id = ? AND song_id = ?',
             [userId, songId]
         );
