@@ -27,12 +27,12 @@ router.post('/register', async (req, res) => {
         }
 
         // MySQL trả về [rows, fields], ta lấy rows
-        const [existing] = await db.execute(
+        const existing = await db.query(
             'SELECT id FROM users WHERE username = ? OR email = ?',
             [username, email]
         );
 
-        if (existing.length > 0) {
+        if (existing && existing.length > 0) {
             return res.status(400).json({
                 success: false,
                 message: 'Đạo hiệu hoặc phúc địa đã được sử dụng!'
@@ -66,9 +66,8 @@ router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
+        // Chỉ khai báo 'user' một lần duy nhất từ db.get
         const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
-
-        const user = users[0];
 
         if (!user) {
             return res.status(401).json({
@@ -212,7 +211,7 @@ router.get('/favorite/:id', async (req, res) => {
     try {
         if (!req.session.user) return res.json({ success: true, isFavorite: false });
 
-        const [rows] = await db.execute(
+        const rows = await db.execute(
             'SELECT id FROM favorites WHERE user_id = ? AND song_id = ?',
             [req.session.user.id, req.params.id]
         );
