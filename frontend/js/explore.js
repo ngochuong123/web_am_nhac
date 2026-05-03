@@ -64,6 +64,9 @@ function selectContinent(id) {
                 const favBtn = e.target.closest('.favorite-btn');
                 if (favBtn) {
                     e.stopPropagation();
+                    if (window.createHeartAnimationGlobal) {
+                        window.createHeartAnimationGlobal(e);
+                    }
                     const songId = favBtn.getAttribute('data-id');
                     fetch(`/api/favorite/${songId}`, { method: 'POST' })
                         .then(r => r.json())

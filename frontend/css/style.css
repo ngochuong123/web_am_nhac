@@ -1254,3 +1254,24 @@ i {
 .main-content {
     padding-bottom: 120px;
 }
+
+/* Animation Thả tim (Pháp thuật) */
+.heart-fly-anim {
+    position: fixed;
+    color: #ff3b30;
+    font-size: 1.5rem;
+    pointer-events: none;
+    z-index: 9999;
+    animation: heartFly 0.8s ease-out forwards;
+}
+
+@keyframes heartFly {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-30px) scale(1.5);
+        opacity: 0;
+    }
+}

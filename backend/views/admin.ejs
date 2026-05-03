@@ -328,63 +328,66 @@
             document.getElementById('songModal').style.display = 'none';
         }
 
-        document.getElementById('songForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        const songFormEl = document.getElementById('songForm');
+        if (songFormEl) {
+            songFormEl.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            const formData = new FormData(e.target);
-            const songData = Object.fromEntries(formData);
-            const audioFile = formData.get('audioFile');
+                const formData = new FormData(e.target);
+                const songData = Object.fromEntries(formData);
+                const audioFile = formData.get('audioFile');
 
-            try {
-                let response;
-                const url = audioFile && audioFile.size > 0 ? '/api/upload-song' : '/api/songs';
+                try {
+                    let response;
+                    const url = audioFile && audioFile.size > 0 ? '/api/upload-song' : '/api/songs';
 
-                if (currentSongId) {
-                    // Update - tạm thời chỉ support URL
-                    response = await fetch(`/api/songs/${currentSongId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(songData)
-                    });
-                } else {
-                    // Create
-                    if (audioFile && audioFile.size > 0) {
-                        // Upload file
-                        const uploadData = new FormData();
-                        uploadData.append('title', songData.title);
-                        uploadData.append('artist', songData.artist);
-                        uploadData.append('duration', songData.duration);
-                        uploadData.append('genre', songData.genre);
-                        uploadData.append('continent', songData.continent);
-                        uploadData.append('cover_url', songData.cover_url);
-                        uploadData.append('audioFile', audioFile);
-
-                        response = await fetch(url, {
-                            method: 'POST',
-                            body: uploadData
-                        });
-                    } else {
-                        // URL
-                        response = await fetch(url, {
-                            method: 'POST',
+                    if (currentSongId) {
+                        // Update - tạm thời chỉ support URL
+                        response = await fetch(`/api/songs/${currentSongId}`, {
+                            method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(songData)
                         });
-                    }
-                }
+                    } else {
+                        // Create
+                        if (audioFile && audioFile.size > 0) {
+                            // Upload file
+                            const uploadData = new FormData();
+                            uploadData.append('title', songData.title);
+                            uploadData.append('artist', songData.artist);
+                            uploadData.append('duration', songData.duration);
+                            uploadData.append('genre', songData.genre);
+                            uploadData.append('continent', songData.continent);
+                            uploadData.append('cover_url', songData.cover_url);
+                            uploadData.append('audioFile', audioFile);
 
-                if (response.ok) {
-                    closeModal();
-                    location.reload(); // Refresh page
-                } else {
-                    const error = await response.json();
-                    alert('Lỗi: ' + (error.message || 'Lỗi lưu bài hát'));
+                            response = await fetch(url, {
+                                method: 'POST',
+                                body: uploadData
+                            });
+                        } else {
+                            // URL
+                            response = await fetch(url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(songData)
+                            });
+                        }
+                    }
+
+                    if (response.ok) {
+                        closeModal();
+                        location.reload(); // Refresh page
+                    } else {
+                        const error = await response.json();
+                        alert('Lỗi: ' + (error.message || 'Lỗi lưu bài hát'));
+                    }
+                } catch (err) {
+                    console.error('Lỗi:', err);
+                    alert('Lỗi lưu bài hát');
                 }
-            } catch (err) {
-                console.error('Lỗi:', err);
-                alert('Lỗi lưu bài hát');
-            }
-        });
+            });
+        }
 
         async function deleteSong(songId) {
             if (!confirm('Bạn có chắc muốn xóa bài hát này?')) return;
@@ -406,11 +409,14 @@
         }
 
         // Đóng modal khi click outside
-        document.getElementById('songModal').addEventListener('click', (e) => {
-            if (e.target.id === 'songModal') {
-                closeModal();
-            }
-        });
+        const songModalEl = document.getElementById('songModal');
+        if (songModalEl) {
+            songModalEl.addEventListener('click', (e) => {
+                if (e.target.id === 'songModal') {
+                    closeModal();
+                }
+            });
+        }
     </script>
 </body>
 

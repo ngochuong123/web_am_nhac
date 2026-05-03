@@ -218,6 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Thả tim trên Card và Player
+    function createHeartAnimation(e) {
+        const heartFly = document.createElement('i');
+        heartFly.className = 'fas fa-heart heart-fly-anim';
+        heartFly.style.left = (e.clientX - 10) + 'px';
+        heartFly.style.top = (e.clientY - 10) + 'px';
+        document.body.appendChild(heartFly);
+        
+        setTimeout(() => heartFly.remove(), 800);
+    }
+    window.createHeartAnimationGlobal = createHeartAnimation;
+
     const handleFavorite = async (songId, btnEl) => {
         try {
             const res = await fetch(`/api/favorite/${songId}`, { method: 'POST' });
@@ -226,7 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) { console.error(err); }
     };
 
-    playerFavBtn?.addEventListener('click', () => handleFavorite(currentSongId, playerFavBtn));
+    playerFavBtn?.addEventListener('click', (e) => {
+        createHeartAnimation(e);
+        handleFavorite(currentSongId, playerFavBtn);
+    });
 
     document.querySelectorAll('.favorite-btn').forEach(btn => {
         const songId = btn.getAttribute('data-id');
@@ -235,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Click
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
+            createHeartAnimation(e);
             handleFavorite(songId, btn);
         });
     });
