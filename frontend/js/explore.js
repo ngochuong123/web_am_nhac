@@ -55,31 +55,32 @@ function selectContinent(id) {
         });
 
         container.innerHTML = html;
-
-        // GẮN SỰ KIỆN CLICK PHÁT NHẠC
+        wrapper.style.display = 'block';
+        // GẮN SỰ KIỆN DUY NHẤT CHO DANH SÁCH MỚI
         const newCards = container.querySelectorAll('.explore-song-item');
         newCards.forEach(card => {
             card.addEventListener('click', (e) => {
-                // Nếu click vào nút thả tim thì xử lý riêng, không phát nhạc
-                if (e.target.closest('.favorite-btn')) {
+                // 1. Xử lý riêng nếu click vào nút thả tim
+                const favBtn = e.target.closest('.favorite-btn');
+                if (favBtn) {
                     e.stopPropagation();
-                    const btn = e.target.closest('.favorite-btn');
-                    const songId = btn.getAttribute('data-id');
+                    const songId = favBtn.getAttribute('data-id');
                     fetch(`/api/favorite/${songId}`, { method: 'POST' })
                         .then(r => r.json())
                         .then(d => {
-                            if (d.success) btn.style.color = d.isFavorite ? '#ff3b30' : '#fff';
+                            if (d.success) favBtn.style.color = d.isFavorite ? '#ff3b30' : '#fff';
                         });
                     return;
                 }
 
-                // GỌI HÀM PHÁT NHẠC TOÀN CỤC TỪ SCRIPT.JS
+                // 2. Gọi hàm phát nhạc toàn cục
                 if (window.playSongGlobal) {
                     window.playSongGlobal(card);
+                } else {
+                    console.error("Lỗi: Hệ thống nhạc chưa sẵn sàng!");
                 }
             });
         });
-        wrapper.style.display = 'block';
 
         // Set trạng thái favorite ban đầu
         const favBtns = container.querySelectorAll('.favorite-btn');
@@ -97,42 +98,5 @@ function selectContinent(id) {
         // Cuộn xuống danh sách
         wrapper.scrollIntoView({ behavior: 'smooth' });
 
-        // Gắn lại sự kiện click phát nhạc cho các card vừa tạo (tái sử dụng script.js nếu có thể, hoặc dispatch sự kiện)
-        // Gọi lại logic gắn sự kiện từ script.js bằng cách giả lập hoặc yêu cầu tải lại, 
-        // Tuy nhiên do script.js chạy lúc DOMContentLoaded, ta cần attach event thủ công cho danh sách mới này
-        const newCards = container.querySelectorAll('.music-card');
-        newCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.classList.contains('favorite-btn')) {
-                    // Logic thả tim
-                    e.stopPropagation();
-                    const songId = e.target.getAttribute('data-id');
-                    fetch(`/api/favorite/${songId}`, { method: 'POST' })
-                        .then(r => r.json())
-                        .then(d => {
-                            if (d.success) e.target.style.color = d.isFavorite ? 'var(--accent-red, #ff3b30)' : '#fff';
-                            else alert(d.message);
-                        });
-                    return;
-                }
-
-                // Kích hoạt playSong toàn cục nếu có (do script.js không expose playSong, 
-                // ta mô phỏng click bằng cách gọi audio player hoặc dispatch một custom event)
-                // Một thủ thuật là để playSong thành global trong script.js, nhưng hiện tại nó đang bị đóng gói.
-                // Thôi thì tự kích hoạt
-                window.playSongGlobal && window.playSongGlobal(card);
-            });
-        });
-
-    } else {
-        wrapper.style.display = 'block';
-        title.textContent = `Âm Nhạc ${continentNames[id] || id.toUpperCase()}`;
-        container.innerHTML = `
-            <div style="text-align: center; padding: 50px; color: #888; width: 100%;">
-                <i class="fas fa-wind" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 20px;"></i>
-                <h3>Nơi này tĩnh lặng, chưa có âm thanh nào...</h3>
-            </div>
-        `;
-        wrapper.scrollIntoView({ behavior: 'smooth' });
     }
 }

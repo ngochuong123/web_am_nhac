@@ -160,9 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.error(err));
 
         checkFavoriteStatus(songId);
-        window.playSongGlobal = playSong;
     }
-
+    window.playSongGlobal = playSong;
     async function checkFavoriteStatus(songId) {
         if (!playerFavBtn) return;
         try {

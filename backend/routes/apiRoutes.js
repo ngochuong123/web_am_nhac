@@ -4,6 +4,23 @@ const bcrypt = require('bcryptjs');
 const streamifier = require('streamifier');
 const db = require('../database'); // Import pool từ database.js mới
 const { cloudinary, upload } = require('../utils/uploadConfig');
+// backend/routes/apiRoutes.js
+// PHẢI ĐẶT LÊN ĐẦU TIÊN
+router.get('/search-live', async (req, res) => {
+    try {
+        const queryStr = req.query.q || '';
+        if (queryStr.length < 1) return res.json({ success: true, songs: [] });
+
+        // Dùng db.query (không dùng [songs]) vì helper đã bóc tách rows
+        const songs = await db.query(
+            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? LIMIT 10',
+            [`%${queryStr}%`, `%${queryStr}%`]
+        );
+        res.json({ success: true, songs: songs || [] });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
 
 // =============================================
 // ĐĂNG KÝ
@@ -299,39 +316,5 @@ router.delete('/songs/:id', async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-// backend/routes/apiRoutes.js
 
-// ... (giữ nguyên phần require)
-
-// =============================================
-// TÌM KIẾM LIVE (QUAN TRỌNG: PHẢI ĐẶT TRƯỚC CÁC ROUTE CÓ :id)
-// =============================================
-router.get('/search-live', async (req, res) => {
-    try {
-        const queryStr = req.query.q || '';
-        if (queryStr.length < 1) return res.json({ success: true, songs: [] });
-
-        // Sử dụng db.query vì hàm này đã bóc tách rows
-        const songs = await db.query(
-            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? LIMIT 10',
-            [`%${queryStr}%`, `%${queryStr}%`]
-        );
-
-        res.json({ success: true, songs: songs || [] });
-    } catch (err) {
-        console.error('Lỗi tìm kiếm live:', err);
-        res.status(500).json({ success: false });
-    }
-});
-
-// ... (Giữ nguyên các phần Register, Login, Logout bên dưới)
-
-// =============================================
-// QUẢN LÝ BÀI HÁT (ADMIN) - GIỮ NGUYÊN NHƯNG ĐÃ ĐẶT SAU SEARCH
-// =============================================
-router.get('/songs/:id', async (req, res) => {
-    // ... nội dung cũ của đạo hữu
-});
-
-// ... (Các phần còn lại giữ nguyên)
 module.exports = router;
