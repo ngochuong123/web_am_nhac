@@ -187,15 +187,12 @@ router.post('/upload-song', upload.single('audioFile'), async (req, res) => {
 // =============================================
 // LƯU LỊCH SỬ NGHE NHẠC
 // =============================================
-// Lưu lịch sử khi bài hát được chạy (POST)
 router.post('/history/:id', async (req, res) => {
     try {
         const songId = req.params.id;
-
-        // Tăng lượt nghe (Dùng db.execute)
+        // UPDATE/INSERT thì dùng execute là đúng
         await db.execute('UPDATE songs SET play_count = play_count + 1 WHERE id = ?', [songId]);
 
-        // Nếu đạo hữu đã đăng nhập thì mới lưu vào bảng play_history
         if (req.session.user) {
             await db.execute(
                 'INSERT INTO play_history (user_id, song_id) VALUES (?, ?)',
@@ -204,7 +201,6 @@ router.post('/history/:id', async (req, res) => {
         }
         res.json({ success: true });
     } catch (err) {
-        console.error('Lỗi lưu lịch sử:', err);
         res.status(500).json({ success: false });
     }
 });
@@ -216,17 +212,18 @@ router.get('/favorite/:id', async (req, res) => {
     try {
         if (!req.session.user) return res.json({ success: true, isFavorite: false });
 
-        const rows = await db.execute(
+        // PHẢI dùng db.query để nhận về mảng rows
+        const rows = await db.query(
             'SELECT id FROM favorites WHERE user_id = ? AND song_id = ?',
             [req.session.user.id, req.params.id]
         );
 
-        res.json({ success: true, isFavorite: rows.length > 0 });
+        res.json({ success: true, isFavorite: rows && rows.length > 0 });
     } catch (err) {
+        console.error('Lỗi check favorite:', err);
         res.status(500).json({ success: false });
     }
 });
-
 router.post('/favorite/:id', async (req, res) => {
     try {
         if (!req.session.user) return res.status(401).json({ success: false, message: 'Cần đăng nhập!' });
@@ -234,19 +231,23 @@ router.post('/favorite/:id', async (req, res) => {
         const userId = req.session.user.id;
         const songId = req.params.id;
 
-        const existing = await db.execute(
+        // Dùng db.query để lấy danh sách kiểm tra tồn tại
+        const existing = await db.query(
             'SELECT id FROM favorites WHERE user_id = ? AND song_id = ?',
             [userId, songId]
         );
 
-        if (existing.length > 0) {
+        if (existing && existing.length > 0) {
+            // Đã thích -> Xóa (Dùng execute vì đây là lệnh DELETE)
             await db.execute('DELETE FROM favorites WHERE id = ?', [existing[0].id]);
             return res.json({ success: true, isFavorite: false, message: 'Đã hủy yêu thích.' });
         } else {
+            // Chưa thích -> Thêm
             await db.execute('INSERT INTO favorites (user_id, song_id) VALUES (?, ?)', [userId, songId]);
             return res.json({ success: true, isFavorite: true, message: 'Đã thêm vào yêu thích!' });
         }
     } catch (err) {
+        console.error('Lỗi POST favorite:', err);
         res.status(500).json({ success: false });
     }
 });
@@ -256,7 +257,7 @@ router.post('/favorite/:id', async (req, res) => {
 // =============================================
 router.get('/songs/:id', async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT * FROM songs WHERE id = ?', [req.params.id]);
+        const rows = await db.execute('SELECT * FROM songs WHERE id = ?', [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ success: false });
         res.json(rows[0]);
     } catch (err) {

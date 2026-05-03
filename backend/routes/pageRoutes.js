@@ -87,7 +87,7 @@ router.get('/history', async (req, res) => {
     try {
         if (!req.session.user) return res.redirect('/login');
 
-        const [songs] = await db.query(
+        const songs = await db.query(
             `SELECT s.* FROM songs s 
              JOIN play_history h ON s.id = h.song_id 
              WHERE h.user_id = ? 
@@ -114,7 +114,7 @@ router.get('/favorites', async (req, res) => {
     try {
         if (!req.session.user) return res.redirect('/login');
 
-        const [songs] = await db.query(
+        const songs = await db.query(
             `SELECT s.* FROM songs s 
              JOIN favorites f ON s.id = f.song_id 
              WHERE f.user_id = ? 
@@ -148,7 +148,7 @@ router.get('/category/:type', async (req, res) => {
 
         // Lấy 5 bài hát cho mỗi danh mục
         const categories = await Promise.all(groups.map(async g => {
-            const [songs] = await db.query(
+            const songs = await db.query(
                 `SELECT * FROM songs WHERE ${type} = ? LIMIT 5`,
                 [g.name]
             );
