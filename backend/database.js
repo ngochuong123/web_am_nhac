@@ -38,8 +38,11 @@ async function initDatabase() {
 // =============================================
 
 // Thay thế hàm all() cũ
+// backend/database.js
 async function query(sql, params = []) {
-    return pool.query(sql, params);
+    // bóc tách [rows] ngay tại đây
+    const [rows] = await pool.query(sql, params);
+    return rows; // Chỉ trả về mảng dữ liệu bài hát
 }
 
 // Thay thế hàm get() cũ

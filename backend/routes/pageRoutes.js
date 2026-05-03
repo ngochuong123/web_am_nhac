@@ -3,22 +3,24 @@ const router = express.Router();
 const db = require('../database'); // Sử dụng pool từ database.js mới
 
 // Trang chủ
-// Trang chủ - backend/routes/pageRoutes.js
+// backend/routes/pageRoutes.js
 router.get('/', async (req, res) => {
     try {
-        // Mỗi db.query trả về [rows, fields]. 
-        // Khi dùng Promise.all, kết quả trả về là một mảng chứa 3 mảng [rows, fields].
-        const [suggestedRaw, recentRaw, chartRaw] = await Promise.all([
+        // Gọi Promise.all mà KHÔNG bóc tách dấu [ ] ở vế trái
+        const results = await Promise.all([
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'),
             db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
         ]);
 
-        // CỰC KỲ QUAN TRỌNG: Lấy phần tử [0] của từng kết quả thô để có đúng mảng 'rows'
+        // Kiểm tra Logs để xem dữ liệu thực tế (Chỉ hiện ở terminal Render)
+        console.log('Kiểm tra dữ liệu:', Array.isArray(results[0]));
+
         res.render('index', {
-            suggestedSongs: suggestedRaw[0] || [], // Lấy rows, nếu lỗi thì cho mảng rỗng
-            recentSongs: recentRaw[0] || [],
-            chartSongs: chartRaw[0] || []
+            // results[0] chính là mảng trả về từ câu lệnh SQL đầu tiên
+            suggestedSongs: results[0] || [],
+            recentSongs: results[1] || [],
+            chartSongs: results[2] || []
         });
     } catch (err) {
         console.error('Lỗi Trang chủ:', err);
