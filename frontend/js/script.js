@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================
-    // 2. TÌM KIẾM LIVE (SEARCH LIVE)
+    // 2. TÌM KIẾM LIVE (SEARCH LIVE) - CẬP NHẬT
     // =============================================
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', (e) => {
             const value = e.target.value.trim();
             clearTimeout(searchTimeout);
+
             if (value.length > 0) {
+                // Đợi 300ms sau khi ngừng gõ mới gọi API để tiết kiệm tài nguyên
                 searchTimeout = setTimeout(async () => {
                     try {
                         const response = await fetch(`/api/search-live?q=${encodeURIComponent(value)}`);
@@ -67,16 +69,29 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResults.innerHTML = '<div class="search-item">Không tìm thấy bài hát nào</div>';
             return;
         }
+        // Thêm các thuộc tính data- vào mỗi kết quả để hàm playSong có thể đọc được
         searchResults.innerHTML = songs.map(song => `
-            <div class="search-item" data-song-id="${song.id}" data-title="${song.title}" data-artist="${song.artist}" data-cover="${song.cover_url}" data-audio="${song.audio_url}" onclick="playFromSearch(this)">
+            <div class="search-item" 
+                 data-song-id="${song.id}" 
+                 data-title="${song.title}" 
+                 data-artist="${song.artist}" 
+                 data-cover="${song.cover_url}" 
+                 data-audio="${song.audio_url}"
+                 onclick="playFromSearch(this)">
                 <img src="${song.cover_url}" alt="${song.title}">
-                <div><p class="title">${song.title}</p><p class="artist">${song.artist}</p></div>
+                <div>
+                    <p class="title">${song.title}</p>
+                    <p class="artist">${song.artist}</p>
+                </div>
             </div>
         `).join('');
     }
 
     window.playFromSearch = function (el) {
-        playSong(el);
+        // el ở đây chính là div .search-item vừa click
+        if (typeof playSong === 'function') {
+            playSong(el);
+        }
         if (searchResults) searchResults.innerHTML = '';
         if (searchInput) searchInput.value = '';
     };
@@ -145,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.error(err));
 
         checkFavoriteStatus(songId);
+        window.playSongGlobal = playSong;
     }
 
     async function checkFavoriteStatus(songId) {

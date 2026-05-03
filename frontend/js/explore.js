@@ -5,7 +5,7 @@ function selectContinent(id) {
     const wrapper = document.getElementById('continent-songs-wrapper');
     const container = document.getElementById('continent-songs-container');
     const title = document.getElementById('continent-songs-title');
-    
+
     // Tên hiển thị
     const continentNames = {
         'asia': 'Châu Á',
@@ -17,11 +17,16 @@ function selectContinent(id) {
 
     if (songs && songs.length > 0) {
         title.innerHTML = `Âm Nhạc ${continentNames[id] || id.toUpperCase()} <span style="font-size: 0.8rem; color: #888; font-weight: normal;">(${songs.length} bài)</span>`;
-        
+
         let html = '';
         songs.forEach((song, index) => {
             html += `
-            <div class="song-item-row music-card" data-song-id="${song.id}" data-title="${song.title}" data-artist="${song.artist}" data-cover="${song.cover_url}" data-audio="${song.audio_url}">
+            <div class="song-item-row music-card explore-song-item" 
+                 data-song-id="${song.id}" 
+                 data-title="${song.title}" 
+                 data-artist="${song.artist}" 
+                 data-cover="${song.cover_url}" 
+                 data-audio="${song.audio_url}">
                 <div class="row-number">${index + 1}</div>
                 
                 <div class="row-info">
@@ -37,21 +42,45 @@ function selectContinent(id) {
                 </div>
 
                 <div class="row-meta">
-                    ${song.genre}
+                    ${song.genre || ''}
                 </div>
 
                 <div class="row-actions">
                     <i class="fas fa-heart favorite-btn" data-id="${song.id}"></i>
-                    <span class="row-duration">${song.duration}</span>
+                    <span class="row-duration">${song.duration || '0:00'}</span>
                     <i class="fas fa-ellipsis-h"></i>
                 </div>
             </div>
             `;
         });
-        
+
         container.innerHTML = html;
+
+        // GẮN SỰ KIỆN CLICK PHÁT NHẠC
+        const newCards = container.querySelectorAll('.explore-song-item');
+        newCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Nếu click vào nút thả tim thì xử lý riêng, không phát nhạc
+                if (e.target.closest('.favorite-btn')) {
+                    e.stopPropagation();
+                    const btn = e.target.closest('.favorite-btn');
+                    const songId = btn.getAttribute('data-id');
+                    fetch(`/api/favorite/${songId}`, { method: 'POST' })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.success) btn.style.color = d.isFavorite ? '#ff3b30' : '#fff';
+                        });
+                    return;
+                }
+
+                // GỌI HÀM PHÁT NHẠC TOÀN CỤC TỪ SCRIPT.JS
+                if (window.playSongGlobal) {
+                    window.playSongGlobal(card);
+                }
+            });
+        });
         wrapper.style.display = 'block';
-        
+
         // Set trạng thái favorite ban đầu
         const favBtns = container.querySelectorAll('.favorite-btn');
         favBtns.forEach(async (btn) => {
@@ -64,7 +93,7 @@ function selectContinent(id) {
                 }
             } catch (err) { console.error('Lỗi check favorite:', err); }
         });
-        
+
         // Cuộn xuống danh sách
         wrapper.scrollIntoView({ behavior: 'smooth' });
 
@@ -81,12 +110,12 @@ function selectContinent(id) {
                     fetch(`/api/favorite/${songId}`, { method: 'POST' })
                         .then(r => r.json())
                         .then(d => {
-                            if(d.success) e.target.style.color = d.isFavorite ? 'var(--accent-red, #ff3b30)' : '#fff';
+                            if (d.success) e.target.style.color = d.isFavorite ? 'var(--accent-red, #ff3b30)' : '#fff';
                             else alert(d.message);
                         });
                     return;
                 }
-                
+
                 // Kích hoạt playSong toàn cục nếu có (do script.js không expose playSong, 
                 // ta mô phỏng click bằng cách gọi audio player hoặc dispatch một custom event)
                 // Một thủ thuật là để playSong thành global trong script.js, nhưng hiện tại nó đang bị đóng gói.
