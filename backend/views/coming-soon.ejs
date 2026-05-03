@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             height: 70vh;
             text-align: center;
         }
+
         .seal-icon {
             font-size: 5rem;
             color: rgba(0, 242, 255, 0.3);
@@ -22,6 +24,7 @@
             animation: pulse 2s infinite;
             filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.5));
         }
+
         .seal-title {
             font-size: 2rem;
             color: var(--accent-cyan);
@@ -29,44 +32,61 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
+
         .seal-text {
             color: #aaa;
             font-size: 1.1rem;
             max-width: 500px;
             line-height: 1.6;
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.5; }
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- SIDEBAR -->
         <%- include('partials/sidebar') %>
 
-        <main class="main-content">
-            <!-- HEADER -->
-            <%- include('partials/header') %>
+            <main class="main-content">
+                <!-- HEADER -->
+                <%- include('partials/header') %>
 
-            <!-- CONTENT AREA -->
-            <section class="scroll-area" style="padding: 20px 40px;">
-                <div class="seal-container">
-                    <i class="fas fa-yin-yang seal-icon fa-spin-pulse"></i>
-                    <h1 class="seal-title">Khu Vực Đang Phong Ấn</h1>
-                    <p class="seal-text">Bí cảnh này hiện đang được các Trưởng Lão bế quan tu luyện để rèn đúc thêm tính năng mới. Đạo hữu vui lòng quay lại sau khi phong ấn được gỡ bỏ!</p>
-                    <button class="btn-primary" style="margin-top: 30px;" onclick="window.location.href='/'">Quay Về Trang Chủ</button>
-                </div>
-            </section>
-        </main>
+                    <!-- CONTENT AREA -->
+                    <section class="scroll-area" style="padding: 20px 40px;">
+                        <div class="seal-container">
+                            <i class="fas fa-yin-yang seal-icon fa-spin-pulse"></i>
+                            <h1 class="seal-title">Khu Vực Đang Phong Ấn</h1>
+                            <p class="seal-text">Bí cảnh này hiện đang được các Trưởng Lão bế quan tu luyện để rèn đúc
+                                thêm tính năng mới. Đạo hữu vui lòng quay lại sau khi phong ấn được gỡ bỏ!</p>
+                            <button class="btn-primary" style="margin-top: 30px;"
+                                onclick="window.location.href='/'">Quay Về Trang Chủ</button>
+                        </div>
+                    </section>
+            </main>
     </div>
 
-        <!-- MUSIC PLAYER BAR -->
-        <%- include('partials/player') %>
-    </div>
+    <!-- MUSIC PLAYER BAR -->
+    <%- include('partials/player') %>
+        </div>
 
-    <script src="/js/script.js"></script>
+        <script src="/js/script.js"></script>
 </body>
+
 </html>

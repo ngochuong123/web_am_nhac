@@ -1,73 +1,95 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= pageTitle %> - Diệu Âm Tiên Cảnh</title>
+    <title>
+        <%= pageTitle %> - Diệu Âm Tiên Cảnh
+    </title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
         <!-- SIDEBAR -->
         <%- include('partials/sidebar') %>
 
-        <main class="main-content">
-            <!-- HEADER -->
-            <%- include('partials/header') %>
+            <main class="main-content">
+                <!-- HEADER -->
+                <%- include('partials/header') %>
 
-            <!-- CONTENT AREA -->
-            <section class="scroll-area" style="padding: 20px 40px;">
-                <h1 style="color: var(--accent-cyan); margin-bottom: 30px;"><%= pageTitle %></h1>
+                    <!-- CONTENT AREA -->
+                    <section class="scroll-area" style="padding: 20px 40px;">
+                        <h1 style="color: var(--accent-cyan); margin-bottom: 30px;">
+                            <%= pageTitle %>
+                        </h1>
 
-                <% if (categories && categories.length > 0) { %>
-                    <% categories.forEach(category => { %>
-                        <section class="music-section">
-                            <div class="section-header" style="margin-bottom: 10px;">
-                                <h2><%= category.name %> <span style="font-size: 0.8rem; color: #888; font-weight: normal;">(<%= category.count %> bài)</span></h2>
-                            </div>
-                            <div class="song-list-container">
-                                <% category.songs.forEach((song, index) => { %>
-                                <div class="song-item-row music-card" data-song-id="<%= song.id %>" data-title="<%= song.title %>" data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>" data-audio="<%= song.audio_url %>">
-                                    <div class="row-number"><%= index + 1 %></div>
-                                    
-                                    <div class="row-info">
-                                        <div class="row-cover" style="background-image: url('<%= song.cover_url %>');">
-                                            <div class="row-play-overlay">
-                                                <i class="fas fa-play"></i>
+                        <% if (categories && categories.length> 0) { %>
+                            <% categories.forEach(category=> { %>
+                                <section class="music-section">
+                                    <div class="section-header" style="margin-bottom: 10px;">
+                                        <h2>
+                                            <%= category.name %> <span
+                                                    style="font-size: 0.8rem; color: #888; font-weight: normal;">(<%=
+                                                        category.count %> bài)</span>
+                                        </h2>
+                                    </div>
+                                    <div class="song-list-container">
+                                        <% category.songs.forEach((song, index)=> { %>
+                                            <div class="song-item-row music-card" data-song-id="<%= song.id %>"
+                                                data-title="<%= song.title %>" data-artist="<%= song.artist %>"
+                                                data-cover="<%= song.cover_url %>" data-audio="<%= song.audio_url %>">
+                                                <div class="row-number">
+                                                    <%= index + 1 %>
+                                                </div>
+
+                                                <div class="row-info">
+                                                    <div class="row-cover"
+                                                        style="background-image: url('<%= song.cover_url %>');">
+                                                        <div class="row-play-overlay">
+                                                            <i class="fas fa-play"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row-text">
+                                                        <h3>
+                                                            <%= song.title %>
+                                                        </h3>
+                                                        <p>
+                                                            <%= song.artist %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row-meta">
+                                                    <%= song.genre %>
+                                                </div>
+
+                                                <div class="row-actions">
+                                                    <i class="fas fa-heart favorite-btn" data-id="<%= song.id %>"></i>
+                                                    <span class="row-duration">
+                                                        <%= song.duration %>
+                                                    </span>
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row-text">
-                                            <h3><%= song.title %></h3>
-                                            <p><%= song.artist %></p>
-                                        </div>
+                                            <% }); %>
                                     </div>
-
-                                    <div class="row-meta">
-                                        <%= song.genre %>
-                                    </div>
-
-                                    <div class="row-actions">
-                                        <i class="fas fa-heart favorite-btn" data-id="<%= song.id %>"></i>
-                                        <span class="row-duration"><%= song.duration %></span>
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </div>
-                                </div>
+                                </section>
                                 <% }); %>
-                            </div>
-                        </section>
-                    <% }); %>
-                <% } else { %>
-                    <p style="color: #888;">Chưa có dữ liệu.</p>
-                <% } %>
-            </section>
-        </main>
+                                    <% } else { %>
+                                        <p style="color: #888;">Chưa có dữ liệu.</p>
+                                        <% } %>
+                    </section>
+            </main>
     </div>
 
-        <!-- MUSIC PLAYER BAR -->
-        <%- include('partials/player') %>
-    </div>
+    <!-- MUSIC PLAYER BAR -->
+    <%- include('partials/player') %>
+        </div>
 
-    <script src="/js/script.js"></script>
+        <script src="/js/script.js"></script>
 </body>
+
 </html>

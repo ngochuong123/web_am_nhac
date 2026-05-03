@@ -10,133 +10,157 @@
 </head>
 
 <body>
-
     <div class="container">
         <!-- SIDEBAR -->
         <%- include('partials/sidebar') %>
 
-        <main class="main-content">
-            <!-- HEADER -->
-            <%- include('partials/header') %>
+            <main class="main-content">
+                <!-- HEADER -->
+                <%- include('partials/header') %>
 
-            <section class="scroll-area">
+                    <section class="scroll-area">
+                        <div class="hero-banner">
+                            <div class="hero-overlay"></div>
+                            <div class="hero-content">
+                                <p class="hero-category" data-lang="hero_cat">ÂM NHẠC</p>
+                                <h1 class="hero-title" data-lang="hero_title">KẾT NỐI THẾ GIỚI</h1>
+                                <p class="hero-description" data-lang="hero_desc">
+                                    Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh,
+                                    kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới
+                                </p>
+                                <button class="btn-play-now">
+                                    <i class="fas fa-play"></i> <span data-lang="explore_now">Khám phá ngay</span>
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="hero-banner">
-                    <div class="hero-overlay"></div>
+                        <!-- GỢI Ý DÀNH CHO BẠN -->
+                        <section class="music-section">
+                            <div class="section-header">
+                                <h2 data-lang="suggest_title">GỢI Ý DÀNH CHO BẠN</h2>
+                                <span class="view-all" data-lang="view_all"
+                                    onclick="window.location.href='/search?q='">Xem tất cả</span>
+                            </div>
+                            <div class="card-grid">
+                                <% suggestedSongs.forEach(song=> { %>
+                                    <div class="music-card" data-song-id="<%= song.id %>" data-title="<%= song.title %>"
+                                        data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>"
+                                        data-audio="<%= song.audio_url %>">
+                                        <div class="card-img" style="background-image: url('<%= song.cover_url %>');">
+                                            <div class="play-overlay">
+                                                <i class="fas fa-heart action-icon"></i>
+                                                <i class="fas fa-play play-icon"></i>
+                                                <i class="fas fa-ellipsis-h action-icon"></i>
+                                            </div>
+                                            <i class="fas fa-heart favorite-btn card-favorite"
+                                                data-id="<%= song.id %>"></i>
+                                        </div>
+                                        <h3>
+                                            <%= song.title %>
+                                        </h3>
+                                        <p>
+                                            <%= song.artist %>
+                                        </p>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </section>
 
-                    <div class="hero-content">
-                        <p class="hero-category" data-lang="hero_cat">ÂM NHẠC</p>
-                        <h1 class="hero-title" data-lang="hero_title">KẾT NỐI THẾ GIỚI</h1>
-                        <p class="hero-description" data-lang="hero_desc">
-                            Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh,
-                            kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới
-                        </p>
-                        <button class="btn-play-now">
-                            <i class="fas fa-play"></i> <span data-lang="explore_now">Khám phá ngay</span>
-                        </button>
+                        <!-- GẦN ĐÂY CỦA BẠN -->
+                        <section class="music-section">
+                            <div class="section-header">
+                                <h2 data-lang="recent_title">GẦN ĐÂY CỦA BẠN</h2>
+                                <span class="view-all" data-lang="view_all"
+                                    onclick="window.location.href='/history'">Xem tất cả</span>
+                            </div>
+                            <div class="card-grid">
+                                <% recentSongs.forEach(song=> { %>
+                                    <div class="music-card" data-song-id="<%= song.id %>" data-title="<%= song.title %>"
+                                        data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>"
+                                        data-audio="<%= song.audio_url %>">
+                                        <div class="card-img" style="background-image: url('<%= song.cover_url %>');">
+                                            <div class="play-overlay">
+                                                <i class="fas fa-heart action-icon"></i>
+                                                <i class="fas fa-play play-icon"></i>
+                                                <i class="fas fa-ellipsis-h action-icon"></i>
+                                            </div>
+                                            <i class="fas fa-heart favorite-btn card-favorite"
+                                                data-id="<%= song.id %>"></i>
+                                        </div>
+                                        <h3>
+                                            <%= song.title %>
+                                        </h3>
+                                        <p>
+                                            <%= song.artist %>
+                                        </p>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </section>
+                    </section>
+            </main>
+
+            <aside class="right-panel">
+                <div class="music-section">
+                    <h2><i class="fas fa-chart-line"></i> <span data-lang="chart_title">KHÁM PHÁ ÂM NHẠC</span></h2>
+                    <div class="rank-list">
+                        <% chartSongs.forEach((song, index)=> { %>
+                            <div class="rank-item" data-song-id="<%= song.id %>" data-title="<%= song.title %>"
+                                data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>"
+                                data-audio="<%= song.audio_url %>">
+                                <span class="rank-num num-<%= index + 1 %>">
+                                    <%= index + 1 %>
+                                </span>
+                                <div class="rank-info">
+                                    <h4>
+                                        <%= song.title %>
+                                    </h4>
+                                    <p>
+                                        <%= song.artist %>
+                                    </p>
+                                </div>
+                                <span class="rank-views">
+                                    <%= (song.play_count / 1000000).toFixed(1) %> <span data-lang="million">triệu</span>
+                                </span>
+                                <div class="play-btn-small">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <% }); %>
                     </div>
                 </div>
 
-                <section class="music-section">
-                    <div class="section-header">
-                        <h2 data-lang="suggest_title">GỢI Ý DÀNH CHO BẠN</h2>
-                        <span class="view-all" data-lang="view_all" onclick="window.location.href='/search?q='">Xem tất cả</span>
-                    </div>
-                    <div class="card-grid">
-                        <% suggestedSongs.forEach(song => { %>
-                        <div class="music-card" data-song-id="<%= song.id %>" data-title="<%= song.title %>" data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>" data-audio="<%= song.audio_url %>">
-                            <div class="card-img" style="background-image: url('<%= song.cover_url %>');">
-                                <div class="play-overlay">
-                                    <i class="fas fa-heart action-icon"></i>
-                                    <i class="fas fa-play play-icon"></i>
-                                    <i class="fas fa-ellipsis-h action-icon"></i>
-                                </div>
-                                <i class="fas fa-heart favorite-btn card-favorite" data-id="<%= song.id %>"></i>
-                            </div>
-                            <h3><%= song.title %></h3>
-                            <p><%= song.artist %></p>
-                        </div>
-                        <% }); %>
-                    </div>
-                </section>
-
-                <section class="music-section">
-                    <div class="section-header">
-                        <h2 data-lang="recent_title">GẦN ĐÂY CỦA BẠN</h2>
-                        <span class="view-all" data-lang="view_all" onclick="window.location.href='/history'">Xem tất cả</span>
-                    </div>
-                    <div class="card-grid">
-                        <% recentSongs.forEach(song => { %>
-                        <div class="music-card" data-song-id="<%= song.id %>" data-title="<%= song.title %>" data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>" data-audio="<%= song.audio_url %>">
-                            <div class="card-img" style="background-image: url('<%= song.cover_url %>');">
-                                <div class="play-overlay">
-                                    <i class="fas fa-heart action-icon"></i>
-                                    <i class="fas fa-play play-icon"></i>
-                                    <i class="fas fa-ellipsis-h action-icon"></i>
-                                </div>
-                                <i class="fas fa-heart favorite-btn card-favorite" data-id="<%= song.id %>"></i>
-                            </div>
-                            <h3><%= song.title %></h3>
-                            <p><%= song.artist %></p>
-                        </div>
-                        <% }); %>
-                    </div>
-                </section>
-            </section>
-        </main>
-
-        <aside class="right-panel">
-            <div class="music-section">
-                <h2> <i class="fas fa-chart-line"></i> <span data-lang="chart_title">KHÁM PHÁ ÂM NHẠC</span></h2>
-
-                <div class="rank-list">
-                    <% chartSongs.forEach((song, index) => { %>
-                    <div class="rank-item" data-song-id="<%= song.id %>" data-title="<%= song.title %>" data-artist="<%= song.artist %>" data-cover="<%= song.cover_url %>" data-audio="<%= song.audio_url %>">
-                        <span class="rank-num num-<%= index + 1 %>"><%= index + 1 %></span>
-                        <div class="rank-info">
-                            <h4><%= song.title %></h4>
-                            <p><%= song.artist %></p>
-                        </div>
-                        <span class="rank-views"><%= (song.play_count / 1000000).toFixed(1) %> <span data-lang="million">triệu</span></span>
-
-                        <div class="play-btn-small">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
-                    <% }); %>
+                <div class="premium-box">
+                    <h2 data-lang="premium_title">Gói Cao Cấp</h2>
+                    <p data-lang="premium_desc">Trải nghiệm không giới hạn với chất lượng cao nhất</p>
+                    <button class="btn-upgrade" data-lang="upgrade_now">Nâng cấp ngay</button>
                 </div>
-            </div>
-
-            <div class="premium-box">
-                <h2 data-lang="premium_title">Gói Cao Cấp</h2>
-                <p data-lang="premium_desc">Trải nghiệm không giới hạn với chất lượng cao nhất</p>
-                <button class="btn-upgrade" data-lang="upgrade_now">Nâng cấp ngay</button>
-            </div>
-        </aside>
+            </aside>
     </div>
 
     <!-- MUSIC PLAYER BAR -->
     <%- include('partials/player') %>
 
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-content">
-            <i class="fas fa-yin-yang fa-spin"></i>
-            <p data-lang="logout_loading">Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-content">
+                <i class="fas fa-yin-yang fa-spin"></i>
+                <p data-lang="logout_loading">Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
+            </div>
         </div>
-    </div>
-    <div id="transition-container" class="transition-container">
-        <video id="transition-video" preload="auto">
-            <source src="/images/demo.mp4" type="video/mp4">
-        </video>
 
-        <div id="mist-swipe" class="mist-swipe"></div>
-    </div>
-    <!-- Truyền trạng thái user từ server vào client-side JS -->
-    <script>
-        window.__USER__ = <%- JSON.stringify(user) %>;
-    </script>
-    <script src="/js/lang.js"></script>
-    <script src="/js/script.js"></script>
+        <div id="transition-container" class="transition-container">
+            <video id="transition-video" preload="auto">
+                <source src="/images/demo.mp4" type="video/mp4">
+            </video>
+            <div id="mist-swipe" class="mist-swipe"></div>
+        </div>
+
+        <script>
+            // Bọc trong nháy để VS Code không báo lỗi cú pháp HTML
+            window.__USER__ = <%- JSON.stringify(user || null) %>;
+        </script>
+        <script src="/js/lang.js"></script>
+        <script src="/js/script.js"></script>
 </body>
 
 </html>

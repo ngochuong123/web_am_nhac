@@ -34,38 +34,41 @@
             </div>
 
             <% if (error) { %>
-            <div class="error-msg" style="background: rgba(255,77,77,0.15); border: 1px solid rgba(255,77,77,0.3); color: #ff6b6b; padding: 10px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.85rem;">
-                <i class="fas fa-exclamation-triangle"></i> <%= error %>
-            </div>
-            <% } %>
-
-            <form id="loginForm">
-                <div class="input-box">
-                    <i class="fa-solid fa-om"></i>
-                    <input type="text" id="username" data-lang-placeholder="user_placeholder"
-                        placeholder="Đạo hiệu hoặc Email" required>
+                <div class="error-msg"
+                    style="background: rgba(255,77,77,0.15); border: 1px solid rgba(255,77,77,0.3); color: #ff6b6b; padding: 10px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.85rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <%= error %>
                 </div>
+                <% } %>
 
-                <div class="input-box">
-                    <i class="fa-solid fa-key"></i>
-                    <input type="password" id="password" data-lang-placeholder="pass_placeholder"
-                        placeholder="Mật pháp (Mật khẩu)" required>
-                </div>
+                    <form id="loginForm">
+                        <div class="input-box">
+                            <i class="fa-solid fa-om"></i>
+                            <input type="text" id="username" data-lang-placeholder="user_placeholder"
+                                placeholder="Đạo hiệu hoặc Email" required>
+                        </div>
 
-                <div class="forgot-link" style="text-align: right; margin: -15px 5px 25px 0;">
-                    <a href="#" data-lang="forgot_pass"
-                        style="font-size: 0.75rem; color: #889; text-decoration: none;">Thất lạc mật pháp?</a>
-                </div>
+                        <div class="input-box">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="password" id="password" data-lang-placeholder="pass_placeholder"
+                                placeholder="Mật pháp (Mật khẩu)" required>
+                        </div>
 
-                <button type="submit" class="btn-ascend">
-                    <span data-lang="login_btn">VẬN KHÍ NHẬP CẢNH</span>
-                </button>
-            </form>
+                        <div class="forgot-link" style="text-align: right; margin: -15px 5px 25px 0;">
+                            <a href="#" data-lang="forgot_pass"
+                                style="font-size: 0.75rem; color: #889; text-decoration: none;">Thất lạc mật pháp?</a>
+                        </div>
 
-            <div class="card-footer">
-                <span data-lang="no_account">Chưa có linh căn?</span> <a href="/register" data-lang="go_reg">Khai mở
-                    ngay</a>
-            </div>
+                        <button type="submit" class="btn-ascend">
+                            <span data-lang="login_btn">VẬN KHÍ NHẬP CẢNH</span>
+                        </button>
+                    </form>
+
+                    <div class="card-footer">
+                        <span data-lang="no_account">Chưa có linh căn?</span> <a href="/register"
+                            data-lang="go_reg">Khai mở
+                            ngay</a>
+                    </div>
         </div>
     </div>
 
