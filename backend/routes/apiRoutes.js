@@ -257,7 +257,7 @@ router.post('/favorite/:id', async (req, res) => {
 // =============================================
 router.get('/songs/:id', async (req, res) => {
     try {
-        const rows = await db.execute('SELECT * FROM songs WHERE id = ?', [req.params.id]);
+        const rows = await db.get('SELECT * FROM songs WHERE id = ?', [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ success: false });
         res.json(rows[0]);
     } catch (err) {

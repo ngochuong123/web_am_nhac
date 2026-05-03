@@ -137,11 +137,9 @@ router.get('/category/:type', async (req, res) => {
         let groups = [];
 
         if (type === 'genre') {
-            const rows = await db.query('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
-            groups = rows;
+            groups = await db.query('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
         } else if (type === 'artist') {
-            const rows = await db.query('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
-            groups = rows;
+            groups = await db.query('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
         } else {
             return res.redirect('/');
         }
@@ -155,7 +153,7 @@ router.get('/category/:type', async (req, res) => {
             return {
                 name: g.name,
                 count: g.count,
-                songs: songs
+                songs: songs || []
             };
         }));
 
