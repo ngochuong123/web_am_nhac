@@ -5,17 +5,25 @@ const db = require('../database'); // Sử dụng pool từ database.js mới
 // Trang chủ
 router.get('/', async (req, res) => {
     try {
-        // Sử dụng Promise.all để chạy 3 câu lệnh SQL cùng lúc cho nhanh
-        const [suggestedResults, recentResults, chartResults] = await Promise.all([
+        // Ta bóc tách trực tiếp phần tử thứ nhất của mỗi kết quả ngay khi nhận được
+        const [suggestedRaw, recentRaw, chartRaw] = await Promise.all([
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'),
             db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
         ]);
 
+        // Đảm bảo truyền vào là mảng (rows)
+        // Nếu dùng mysql2, [rows, fields] = db.query(...)
+        // Vậy nên suggestedRaw[0] chính là rows
+        const suggestedSongs = suggestedRaw[0];
+        const recentSongs = recentRaw[0];
+        const chartSongs = chartRaw[0];
+
+        // Kiểm tra an toàn: Nếu không phải mảng thì gán là mảng rỗng
         res.render('index', {
-            suggestedSongs: suggestedResults[0],
-            recentSongs: recentResults[0],
-            chartSongs: chartResults[0]
+            suggestedSongs: Array.isArray(suggestedSongs) ? suggestedSongs : [],
+            recentSongs: Array.isArray(recentSongs) ? recentSongs : [],
+            chartSongs: Array.isArray(chartSongs) ? chartSongs : []
         });
     } catch (err) {
         console.error('Lỗi Trang chủ:', err);

@@ -39,8 +39,7 @@ async function initDatabase() {
 
 // Thay thế hàm all() cũ
 async function query(sql, params = []) {
-    const [rows] = await pool.query(sql, params);
-    return rows;
+    return pool.query(sql, params);
 }
 
 // Thay thế hàm get() cũ
