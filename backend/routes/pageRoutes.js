@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../database'); // Sử dụng pool từ database.js mới
 
 // Trang chủ
+// backend/routes/pageRoutes.js
 router.get('/', async (req, res) => {
     try {
         const results = await Promise.all([
@@ -10,12 +11,22 @@ router.get('/', async (req, res) => {
             db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
         ]);
+
+        // LOG NÀY SẼ GIÚP ĐẠO HỮU BIẾT CODE MỚI ĐÃ CHẠY CHƯA
+        console.log("--- KIỂM TRA DỮ LIỆU TRANG CHỦ ---");
+        console.log("Is Array:", Array.isArray(results[0]));
+        console.log("Data:", results[0]);
+
         res.render('index', {
-            suggestedSongs: results[0] || [], // results[0] đã là mảng
-            recentSongs: results[1] || [],
-            chartSongs: results[2] || []
+            // Ép kiểu mảng để EJS không bao giờ sập
+            suggestedSongs: Array.isArray(results[0]) ? results[0] : [],
+            recentSongs: Array.isArray(results[1]) ? results[1] : [],
+            chartSongs: Array.isArray(results[2]) ? results[2] : []
         });
-    } catch (err) { res.status(500).send('Lỗi Tiên Giới'); }
+    } catch (err) {
+        console.error('Lỗi Trang chủ:', err);
+        res.render('index', { suggestedSongs: [], recentSongs: [], chartSongs: [] });
+    }
 });
 
 // Trang đăng nhập (Giữ nguyên logic)
