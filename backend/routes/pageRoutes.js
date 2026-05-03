@@ -3,27 +3,22 @@ const router = express.Router();
 const db = require('../database'); // Sử dụng pool từ database.js mới
 
 // Trang chủ
+// Trang chủ - backend/routes/pageRoutes.js
 router.get('/', async (req, res) => {
     try {
-        // Ta bóc tách trực tiếp phần tử thứ nhất của mỗi kết quả ngay khi nhận được
+        // Mỗi db.query trả về [rows, fields]. 
+        // Khi dùng Promise.all, kết quả trả về là một mảng chứa 3 mảng [rows, fields].
         const [suggestedRaw, recentRaw, chartRaw] = await Promise.all([
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 6'),
             db.query('SELECT * FROM songs ORDER BY created_at DESC LIMIT 4'),
             db.query('SELECT * FROM songs ORDER BY play_count DESC LIMIT 5')
         ]);
 
-        // Đảm bảo truyền vào là mảng (rows)
-        // Nếu dùng mysql2, [rows, fields] = db.query(...)
-        // Vậy nên suggestedRaw[0] chính là rows
-        const suggestedSongs = suggestedRaw[0];
-        const recentSongs = recentRaw[0];
-        const chartSongs = chartRaw[0];
-
-        // Kiểm tra an toàn: Nếu không phải mảng thì gán là mảng rỗng
+        // CỰC KỲ QUAN TRỌNG: Lấy phần tử [0] của từng kết quả thô để có đúng mảng 'rows'
         res.render('index', {
-            suggestedSongs: Array.isArray(suggestedSongs) ? suggestedSongs : [],
-            recentSongs: Array.isArray(recentSongs) ? recentSongs : [],
-            chartSongs: Array.isArray(chartSongs) ? chartSongs : []
+            suggestedSongs: suggestedRaw[0] || [], // Lấy rows, nếu lỗi thì cho mảng rỗng
+            recentSongs: recentRaw[0] || [],
+            chartSongs: chartRaw[0] || []
         });
     } catch (err) {
         console.error('Lỗi Trang chủ:', err);
