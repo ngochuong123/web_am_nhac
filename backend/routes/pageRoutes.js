@@ -137,10 +137,10 @@ router.get('/category/:type', async (req, res) => {
         let groups = [];
 
         if (type === 'genre') {
-            const [rows] = await db.query('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
+            const rows = await db.query('SELECT genre as name, COUNT(*) as count FROM songs GROUP BY genre');
             groups = rows;
         } else if (type === 'artist') {
-            const [rows] = await db.query('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
+            const rows = await db.query('SELECT artist as name, COUNT(*) as count FROM songs GROUP BY artist');
             groups = rows;
         } else {
             return res.redirect('/');

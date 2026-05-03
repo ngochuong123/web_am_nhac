@@ -299,5 +299,21 @@ router.delete('/songs/:id', async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+// backend/routes/apiRoutes.js
+router.get('/search-live', async (req, res) => {
+    try {
+        const queryStr = req.query.q || '';
+        if (queryStr.length < 1) return res.json({ success: true, songs: [] });
 
+        // Sử dụng db.query vì hàm này của đạo hữu đã bóc tách rows rồi
+        const songs = await db.query(
+            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? LIMIT 10',
+            [`%${queryStr}%`, `%${queryStr}%`]
+        );
+
+        res.json({ success: true, songs: songs || [] });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
 module.exports = router;

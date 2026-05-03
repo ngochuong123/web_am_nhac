@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. XỬ LÝ TRẠNG THÁI ACTIVE THEO URL
     const currentPath = window.location.pathname;
     const currentSearch = window.location.search;
-    
+
     const menuItems = document.querySelectorAll('.sidebar .menu-item');
     const topNavItems = document.querySelectorAll('.top-nav span');
 
@@ -82,18 +82,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- GẮN SỰ KIỆN CHO CÁC NÚT ---
-    
+
     // 1. Ô Tìm kiếm (Search)
-    const searchInput = document.querySelector('.search-bar input');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    window.location.href = `/search?q=${encodeURIComponent(query)}`;
-                }
+    const searchInput = document.getElementById('search-input'); // ID của ô nhập
+    const searchResults = document.getElementById('search-results'); // ID của vùng hiện kết quả
+
+    searchInput.addEventListener('input', async (e) => {
+        const value = e.target.value.trim();
+
+        if (value.length > 0) {
+            const response = await fetch(`/api/search-live?q=${encodeURIComponent(value)}`);
+            const data = await response.json();
+
+            if (data.success) {
+                renderLiveResults(data.songs);
             }
-        });
+        } else {
+            searchResults.innerHTML = ''; // Xóa kết quả nếu ô nhập trống
+        }
+    });
+
+    function renderLiveResults(songs) {
+        // Xóa kết quả cũ và hiển thị danh sách bài hát mới bên dưới thanh tìm kiếm
+        searchResults.innerHTML = songs.map(song => `
+        <div class="search-item" onclick="playSong('${song.id}')">
+            <img src="${song.cover_url}" alt="${song.title}">
+            <div>
+                <p class="title">${song.title}</p>
+                <p class="artist">${song.artist}</p>
+            </div>
+        </div>
+    `).join('');
     }
 
     // 2. Chuyển trang Sidebar (5 mục: Radio, Playlist, Thư viện, Yêu thích, Lịch sử)
@@ -134,14 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerCover = document.getElementById('player-cover');
     const playerTitle = document.getElementById('player-title');
     const playerArtist = document.getElementById('player-artist');
-    
+
     const progressBar = document.getElementById('progress-bar');
     const currentTimeEl = document.getElementById('current-time');
     const totalTimeEl = document.getElementById('total-time');
-    
+
     const volumeBar = document.getElementById('volume-bar');
     const muteBtn = document.getElementById('btn-mute');
-    
+
     let isPlaying = false;
     let currentSongId = null;
     let isShuffle = false;
@@ -178,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (playerTitle) playerTitle.textContent = title;
         if (playerArtist) playerArtist.textContent = artist;
         if (playerCover) playerCover.style.backgroundImage = `url('${cover}')`;
-        
+
         // Check trạng thái favorite cho player button
         if (playerFavBtn) {
             fetch(`/api/favorite/${songId}`)
@@ -190,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => console.error('Lỗi check favorite:', err));
         }
-        
+
         const idx = playlist.indexOf(card);
         if (idx !== -1) currentPlaylistIndex = idx;
 
