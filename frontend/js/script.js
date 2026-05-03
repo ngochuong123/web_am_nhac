@@ -208,11 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-prev')?.addEventListener('click', playPrev);
 
     // Nút Shuffle & Repeat
-    document.querySelector('.fa-random')?.parentElement.addEventListener('click', function () {
+    document.querySelector('.fa-random')?.parentElement?.addEventListener('click', function () {
         isShuffle = !isShuffle;
         this.style.color = isShuffle ? '#00f2ff' : '';
     });
-    document.querySelector('.fa-redo-alt')?.parentElement.addEventListener('click', function () {
+    document.querySelector('.fa-redo-alt')?.parentElement?.addEventListener('click', function () {
         repeatMode = (repeatMode + 1) % 3;
         this.style.color = repeatMode > 0 ? '#00f2ff' : '';
     });

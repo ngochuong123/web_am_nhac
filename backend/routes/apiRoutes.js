@@ -155,7 +155,7 @@ router.get('/songs', async (req, res) => {
         query += ` ORDER BY ${sortField} DESC LIMIT ?`;
         params.push(parseInt(limit));
 
-        const [songs] = await db.query(query, params);
+        const songs = await db.query(query, params);
         res.json({ success: true, songs });
     } catch (err) {
         console.error('Lỗi lấy danh sách nhạc:', err);
@@ -274,9 +274,9 @@ router.post('/favorite/:id', async (req, res) => {
 // =============================================
 router.get('/songs/:id', async (req, res) => {
     try {
-        const rows = await db.get('SELECT * FROM songs WHERE id = ?', [req.params.id]);
-        if (rows.length === 0) return res.status(404).json({ success: false });
-        res.json(rows[0]);
+        const song = await db.get('SELECT * FROM songs WHERE id = ?', [req.params.id]);
+        if (!song) return res.status(404).json({ success: false });
+        res.json(song);
     } catch (err) {
         res.status(500).json({ success: false });
     }
@@ -285,7 +285,7 @@ router.get('/songs/:id', async (req, res) => {
 router.post('/songs', async (req, res) => {
     try {
         const { title, artist, duration, genre, continent, cover_url, audio_url, play_count } = req.body;
-        const [result] = await db.execute(
+        const result = await db.execute(
             'INSERT INTO songs (title, artist, duration, genre, continent, cover_url, audio_url, play_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [title, artist, duration || '0:00', genre, continent, cover_url || '/images/default-cover.jpg', audio_url || '', play_count || 0]
         );
