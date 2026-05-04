@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config({ path: '../.env' }); 
+require('dotenv').config({ path: '../.env' });
 
 async function setupStoredProcedures() {
     const pool = mysql.createPool({
@@ -13,7 +13,7 @@ async function setupStoredProcedures() {
 
     try {
         console.log('Connecting to database...');
-        
+
         await pool.query('DROP PROCEDURE IF EXISTS sp_register_user');
         await pool.query('DROP PROCEDURE IF EXISTS sp_login_user');
 
@@ -32,8 +32,8 @@ async function setupStoredProcedures() {
                 IF v_count > 0 THEN
                     SELECT FALSE AS success, 'Đạo hiệu hoặc phúc địa đã được sử dụng!' AS message;
                 ELSE
-                    INSERT INTO users (username, email, password_hash, role)
-                    VALUES (p_username, p_email, SHA2(p_password, 256), p_role);
+                  INSERT INTO users (username, email, password_hash, role)
+                    VALUES (p_username, p_email, p_password, p_role); 
                     
                     SELECT TRUE AS success, CONCAT('Chào mừng đạo hữu ', p_username, ' đã bước vào hành trình tu luyện!') AS message;
                 END IF;
@@ -44,8 +44,7 @@ async function setupStoredProcedures() {
 
         const spLogin = `
             CREATE PROCEDURE sp_login_user(
-                IN p_username VARCHAR(255),
-                IN p_password VARCHAR(255)
+                IN p_username VARCHAR(255)
             )
             BEGIN
                 DECLARE v_user_id INT;
@@ -58,14 +57,15 @@ async function setupStoredProcedures() {
                 FROM users 
                 WHERE username = p_username LIMIT 1;
                 
-                IF v_user_id IS NULL THEN
-                    SELECT FALSE AS success, 'Đạo hiệu không tồn tại trong thiên đạo!' AS message;
-                ELSEIF v_password_hash = SHA2(p_password, 256) THEN
-                    SELECT TRUE AS success, 'Đăng nhập thành công!' AS message, 
-                           v_user_id AS id, p_username AS username, v_user_email AS email, v_user_role AS role;
-                ELSE
-                    SELECT FALSE AS success, 'Mật pháp không chính xác!' AS message;
-                END IF;
+              -- Procedure lúc này chỉ làm nhiệm vụ lấy thông tin user dựa trên username
+            IF v_user_id IS NULL THEN
+                SELECT FALSE AS success, 'Đạo hiệu không tồn tại trong thiên đạo!' AS message;
+            ELSE
+                -- Trả về hash để Backend dùng bcrypt.compare()
+                SELECT TRUE AS success, 'Thông tin hợp lệ' AS message, 
+                    v_user_id AS id, p_username AS username, v_user_email AS email, 
+                    v_user_role AS role, v_password_hash AS password_hash; 
+                END IF; 
             END
         `;
         await pool.query(spLogin);

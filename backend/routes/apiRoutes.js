@@ -46,7 +46,12 @@ router.post('/register', async (req, res) => {
         const role = username.toLowerCase() === 'admin' ? 'admin' : 'user';
 
         // Gọi Stored Procedure
-        const result = await db.query('CALL sp_register_user(?, ?, ?, ?)', [username, email, password, role]);
+        // 1. Băm mật khẩu bằng Bcrypt trước
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // 2. Truyền hashedPassword (mã băm) vào Procedure
+        const result = await db.query('CALL sp_register_user(?, ?, ?, ?)', [username, email, hashedPassword, role]);
         // mysql2 trả về mảng cho các kết quả của SP. Phần tử đầu tiên là mảng của lệnh SELECT trong SP.
         const row = result[0] && result[0][0] ? result[0][0] : null;
 
@@ -76,14 +81,18 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         // Gọi Stored Procedure
-        const result = await db.query('CALL sp_login_user(?, ?)', [username, password]);
+        // 1. Chỉ gửi username vào SP để lấy thông tin (bao gồm password_hash)
+        const result = await db.query('CALL sp_login_user(?)', [username]);
         const row = result[0] && result[0][0] ? result[0][0] : null;
 
-        if (!row || !row.success) {
-            return res.status(401).json({
-                success: false,
-                message: row ? row.message : 'Mật pháp không chính xác!'
-            });
+        // 2. Nếu tìm thấy user, dùng bcrypt.compare để đối chiếu mật pháp
+        if (row && row.success) {
+            const isMatch = await bcrypt.compare(password, row.password_hash);
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: 'Mật pháp không chính xác!' });
+            }
+        } else {
+            return res.status(401).json({ success: false, message: row ? row.message : 'Đạo hiệu không tồn tại!' });
         }
 
         req.session.user = {
