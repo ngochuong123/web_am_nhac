@@ -163,22 +163,22 @@
 
                     <div class="admin-container">
                         <div class="admin-header">
-                            <h1>Quản lý Bài hát</h1>
+                            <h1 data-lang="admin_title">Quản lý Bài hát</h1>
                             <button class="btn-add" onclick="openAddModal()">
-                                <i class="fas fa-plus"></i> Thêm bài hát
+                                <i class="fas fa-plus"></i> <span data-lang="add_song">Thêm bài hát</span>
                             </button>
                         </div>
 
                         <table class="song-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Tiêu đề</th>
-                                    <th>Nghệ sĩ</th>
-                                    <th>Thể loại</th>
-                                    <th>Châu lục</th>
-                                    <th>Lượt nghe</th>
-                                    <th>Thao tác</th>
+                                    <th data-lang="id_col">ID</th>
+                                    <th data-lang="title_col">Tiêu đề</th>
+                                    <th data-lang="artist_col">Nghệ sĩ</th>
+                                    <th data-lang="genre_col">Thể loại</th>
+                                    <th data-lang="continent_col">Châu lục</th>
+                                    <th data-lang="plays_col">Lượt nghe</th>
+                                    <th data-lang="actions_col">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody id="songTableBody">
@@ -204,10 +204,10 @@
                                         </td>
                                         <td class="song-actions">
                                             <button class="btn-edit" onclick="openEditModal(<%= song.id %>)">
-                                                <i class="fas fa-edit"></i> Sửa
+                                                <i class="fas fa-edit"></i> <span data-lang="edit_btn">Sửa</span>
                                             </button>
                                             <button class="btn-delete" onclick="deleteSong(<%= song.id %>)">
-                                                <i class="fas fa-trash"></i> Xóa
+                                                <i class="fas fa-trash"></i> <span data-lang="delete_btn">Xóa</span>
                                             </button>
                                         </td>
                                     </tr>
@@ -221,79 +221,80 @@
     <!-- Modal thêm/sửa bài hát -->
     <div id="songModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle">Thêm bài hát mới</h2>
+            <h2 id="modalTitle" data-lang="add_new_title">Thêm bài hát mới</h2>
             <form id="songForm">
                 <input type="hidden" id="songId" name="id">
 
                 <div class="form-group">
-                    <label for="title">Tiêu đề:</label>
+                    <label for="title" data-lang="title_label">Tiêu đề:</label>
                     <input type="text" id="title" name="title" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="artist">Nghệ sĩ:</label>
+                    <label for="artist" data-lang="artist_label">Nghệ sĩ:</label>
                     <input type="text" id="artist" name="artist" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="duration">Thời lượng (vd: 3:45):</label>
+                    <label for="duration" data-lang="duration_label">Thời lượng (vd: 3:45):</label>
                     <input type="text" id="duration" name="duration" placeholder="3:45" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="genre">Thể loại:</label>
+                    <label for="genre" data-lang="genre_label">Thể loại:</label>
                     <input type="text" id="genre" name="genre" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="continent">Châu lục:</label>
+                    <label for="continent" data-lang="continent_label">Châu lục:</label>
                     <select id="continent" name="continent" required>
-                        <option value="asia">Châu Á</option>
-                        <option value="europe">Châu Âu</option>
-                        <option value="america">Châu Mỹ</option>
-                        <option value="africa">Châu Phi</option>
-                        <option value="oceania">Châu Đại Dương</option>
+                        <option value="asia" data-lang="asia_name">Châu Á</option>
+                        <option value="europe" data-lang="europe_name">Châu Âu</option>
+                        <option value="america" data-lang="america_name">Châu Mỹ</option>
+                        <option value="africa" data-lang="africa_name">Châu Phi</option>
+                        <option value="oceania" data-lang="oceania_name">Châu Đại Dương</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="cover_url">URL ảnh bìa:</label>
+                    <label for="cover_url" data-lang="cover_url_label">URL ảnh bìa:</label>
                     <input type="url" id="cover_url" name="cover_url" placeholder="https://...">
                 </div>
 
                 <div class="form-group">
-                    <label for="audio_url">URL file nhạc:</label>
+                    <label for="audio_url" data-lang="audio_url_label">URL file nhạc:</label>
                     <input type="url" id="audio_url" name="audio_url" placeholder="https://...">
-                    <small style="color: var(--text-secondary); font-size: 0.8rem;">Hoặc upload file:</small>
+                    <small style="color: var(--text-secondary); font-size: 0.8rem;" data-lang="or_upload_label">Hoặc upload file:</small>
                     <input type="file" id="audio_file" name="audioFile" accept="audio/*">
                 </div>
 
                 <div class="form-group">
-                    <label for="play_count">Lượt nghe:</label>
+                    <label for="play_count" data-lang="play_count_label">Lượt nghe:</label>
                     <input type="number" id="play_count" name="play_count" value="0" min="0">
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal()">Hủy</button>
-                    <button type="submit" class="btn-save">Lưu</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()" data-lang="cancel_btn">Hủy</button>
+                    <button type="submit" class="btn-save" data-lang="save_btn">Lưu</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <script src="/js/lang.js"></script>
     <script>
         let currentSongId = null;
 
         function openAddModal() {
             currentSongId = null;
-            document.getElementById('modalTitle').textContent = 'Thêm bài hát mới';
+            document.getElementById('modalTitle').textContent = typeof getTranslation === 'function' ? getTranslation('add_new_title') : 'Thêm bài hát mới';
             document.getElementById('songForm').reset();
             document.getElementById('songModal').style.display = 'flex';
         }
 
         function openEditModal(songId) {
             currentSongId = songId;
-            document.getElementById('modalTitle').textContent = 'Sửa bài hát';
+            document.getElementById('modalTitle').textContent = typeof getTranslation === 'function' ? getTranslation('edit_song_title') : 'Sửa bài hát';
 
             // Lấy dữ liệu bài hát từ table
             const row = document.querySelector(`tr[data-id="${songId}"]`);
@@ -380,17 +381,20 @@
                         location.reload(); // Refresh page
                     } else {
                         const error = await response.json();
-                        alert('Lỗi: ' + (error.message || 'Lỗi lưu bài hát'));
+                        const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_saving') : 'Lỗi lưu bài hát';
+                        alert(errorMsg + ': ' + (error.message || ''));
                     }
                 } catch (err) {
                     console.error('Lỗi:', err);
-                    alert('Lỗi lưu bài hát');
+                    const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_saving') : 'Lỗi lưu bài hát';
+                    alert(errorMsg);
                 }
             });
         }
 
         async function deleteSong(songId) {
-            if (!confirm('Bạn có chắc muốn xóa bài hát này?')) return;
+            const confirmMsg = typeof getTranslation === 'function' ? getTranslation('confirm_delete') : 'Bạn có chắc muốn xóa bài hát này?';
+            if (!confirm(confirmMsg)) return;
 
             try {
                 const response = await fetch(`/api/songs/${songId}`, {
@@ -400,11 +404,13 @@
                 if (response.ok) {
                     location.reload(); // Refresh page
                 } else {
-                    alert('Lỗi xóa bài hát');
+                    const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_deleting') : 'Lỗi xóa bài hát';
+                    alert(errorMsg);
                 }
             } catch (err) {
                 console.error('Lỗi:', err);
-                alert('Lỗi xóa bài hát');
+                const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_deleting') : 'Lỗi xóa bài hát';
+                alert(errorMsg);
             }
         }
 

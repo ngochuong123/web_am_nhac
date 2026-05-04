@@ -6,17 +6,19 @@ function selectContinent(id) {
     const container = document.getElementById('continent-songs-container');
     const title = document.getElementById('continent-songs-title');
 
-    // Tên hiển thị
+    // Tên hiển thị (Dùng getTranslation để lấy từ điển mới)
     const continentNames = {
-        'asia': 'Châu Á',
-        'europe': 'Châu Âu',
-        'america': 'Châu Mỹ',
-        'africa': 'Châu Phi',
-        'oceania': 'Châu Đại Dương'
+        'asia': getTranslation('asia_name'),
+        'europe': getTranslation('europe_name'),
+        'america': getTranslation('america_name'),
+        'africa': getTranslation('africa_name'),
+        'oceania': getTranslation('oceania_name')
     };
 
     if (songs && songs.length > 0) {
-        title.innerHTML = `Âm Nhạc ${continentNames[id] || id.toUpperCase()} <span style="font-size: 0.8rem; color: #888; font-weight: normal;">(${songs.length} bài)</span>`;
+        const musicOf = getTranslation('music_of');
+        const songCountSuffix = getTranslation('songs_count');
+        title.innerHTML = `${musicOf} ${continentNames[id] || id.toUpperCase()} <span style="font-size: 0.8rem; color: #888; font-weight: normal;">(${songs.length} ${songCountSuffix})</span>`;
 
         let html = '';
         songs.forEach((song, index) => {

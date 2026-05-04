@@ -24,7 +24,8 @@
                     <section class="scroll-area" style="padding: 20px 40px;">
                         <section class="music-section">
                             <div class="section-header">
-                                <h2>
+                                <h2 id="list-title-el" 
+                                    data-lang="<%= listTitle.includes('Lịch sử') ? 'history_title' : (listTitle.includes('Yêu thích') ? 'favorite_title' : '') %>">
                                     <%= listTitle %>
                                 </h2>
                             </div>
@@ -74,8 +75,8 @@
                                     <div style="text-align: center; padding: 50px; color: #888;">
                                         <i class="fas fa-wind"
                                             style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 20px;"></i>
-                                        <h3>Nơi này tĩnh lặng, chưa có âm thanh nào...</h3>
-                                        <p>Hãy khám phá thêm nhạc giới để điền vào đây nhé!</p>
+                                        <h3 data-lang="empty_list_title">Nơi này tĩnh lặng, chưa có âm thanh nào...</h3>
+                                        <p data-lang="empty_list_desc">Hãy khám phá thêm nhạc giới để điền vào đây nhé!</p>
                                     </div>
                                     <% } %>
                         </section>
@@ -87,7 +88,8 @@
     <%- include('partials/player') %>
         </div>
 
-        <script src="/js/script.js"></script>
+        <script src="/js/lang.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>

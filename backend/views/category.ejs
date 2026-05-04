@@ -22,7 +22,9 @@
 
                     <!-- CONTENT AREA -->
                     <section class="scroll-area" style="padding: 20px 40px;">
-                        <h1 style="color: var(--accent-cyan); margin-bottom: 30px;">
+                        <h1 id="page-title-el" 
+                            data-lang="<%= pageTitle === 'Thể Loại' ? 'genres_title' : (pageTitle === 'Nghệ Sĩ' ? 'artists_title' : '') %>"
+                            style="color: var(--accent-cyan); margin-bottom: 30px;">
                             <%= pageTitle %>
                         </h1>
 
@@ -33,7 +35,7 @@
                                         <h2>
                                             <%= category.name %> <span
                                                     style="font-size: 0.8rem; color: #888; font-weight: normal;">(<%=
-                                                        category.count %> bài)</span>
+                                                        category.count %> <span data-lang="songs_count">bài</span>)</span>
                                         </h2>
                                     </div>
                                     <div class="song-list-container">
@@ -79,7 +81,7 @@
                                 </section>
                                 <% }); %>
                                     <% } else { %>
-                                        <p style="color: #888;">Chưa có dữ liệu.</p>
+                                        <p style="color: #888;" data-lang="no_data">Chưa có dữ liệu.</p>
                                         <% } %>
                     </section>
             </main>
@@ -89,7 +91,8 @@
     <%- include('partials/player') %>
         </div>
 
-        <script src="/js/script.js"></script>
+        <script src="/js/lang.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>

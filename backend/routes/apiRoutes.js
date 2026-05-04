@@ -13,8 +13,8 @@ router.get('/search-live', async (req, res) => {
 
         // Dùng db.query (không dùng [songs]) vì helper đã bóc tách rows
         const songs = await db.query(
-            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? LIMIT 10',
-            [`%${queryStr}%`, `%${queryStr}%`]
+            'SELECT * FROM songs WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ? LIMIT 10',
+            [`%${queryStr}%`, `%${queryStr}%`, `%${queryStr}%`]
         );
         res.json({ success: true, songs: songs || [] });
     } catch (err) {
@@ -43,31 +43,23 @@ router.post('/register', async (req, res) => {
             });
         }
 
-        // MySQL trả về [rows, fields], ta lấy rows
-        const existing = await db.query(
-            'SELECT id FROM users WHERE username = ? OR email = ?',
-            [username, email]
-        );
+        const role = username.toLowerCase() === 'admin' ? 'admin' : 'user';
 
-        if (existing && existing.length > 0) {
+        // Gọi Stored Procedure
+        const result = await db.query('CALL sp_register_user(?, ?, ?, ?)', [username, email, password, role]);
+        // mysql2 trả về mảng cho các kết quả của SP. Phần tử đầu tiên là mảng của lệnh SELECT trong SP.
+        const row = result[0] && result[0][0] ? result[0][0] : null;
+
+        if (!row || !row.success) {
             return res.status(400).json({
                 success: false,
-                message: 'Đạo hiệu hoặc phúc địa đã được sử dụng!'
+                message: row ? row.message : 'Đạo hiệu hoặc phúc địa đã được sử dụng!'
             });
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(password, salt);
-        const role = username.toLowerCase() === 'admin' ? 'admin' : 'user';
-
-        await db.execute(
-            'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)',
-            [username, email, passwordHash, role]
-        );
-
         res.json({
             success: true,
-            message: `Chào mừng đạo hữu ${username} đã bước vào hành trình tu luyện!`
+            message: row.message
         });
 
     } catch (err) {
@@ -83,35 +75,28 @@ router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Chỉ khai báo 'user' một lần duy nhất từ db.get
-        const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+        // Gọi Stored Procedure
+        const result = await db.query('CALL sp_login_user(?, ?)', [username, password]);
+        const row = result[0] && result[0][0] ? result[0][0] : null;
 
-        if (!user) {
+        if (!row || !row.success) {
             return res.status(401).json({
                 success: false,
-                message: 'Đạo hiệu không tồn tại trong thiên đạo!'
-            });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) {
-            return res.status(401).json({
-                success: false,
-                message: 'Mật pháp không chính xác!'
+                message: row ? row.message : 'Mật pháp không chính xác!'
             });
         }
 
         req.session.user = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role
+            id: row.id,
+            username: row.username,
+            email: row.email,
+            role: row.role
         };
 
         res.json({
             success: true,
-            message: `Đạo hữu ${user.username} đã quy vị.`,
-            user: { username: user.username, email: user.email }
+            message: `Đạo hữu ${row.username} đã quy vị.`,
+            user: { username: row.username, email: row.email }
         });
 
     } catch (err) {

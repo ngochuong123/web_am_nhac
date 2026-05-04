@@ -28,9 +28,9 @@
                                     Chiêm ngưỡng vũ trụ âm thanh với những giai điệu tiên cảnh,
                                     kết nối tâm hồn bạn với những bản nhạc tuyệt vời từ khắp thế giới
                                 </p>
-                                <button class="btn-play-now">
+                                <a href="/explore" class="btn-play-now">
                                     <i class="fas fa-play"></i> <span data-lang="explore_now">Khám phá ngay</span>
-                                </button>
+                                </a>
                             </div>
                         </div>
 
@@ -149,7 +149,9 @@
         </div>
 
         <div id="transition-container" class="transition-container">
-            <!-- Video demo bị xóa do file không tồn tại -->
+            <video id="transition-video" preload="auto" muted playsinline>
+                <source src="/images/demo.mp4" type="video/mp4">
+            </video>
             <div id="mist-swipe" class="mist-swipe"></div>
         </div>
 
