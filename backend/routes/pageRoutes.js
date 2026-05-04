@@ -47,12 +47,27 @@ router.get('/explore', async (req, res) => {
         const songsByContinent = {};
         const continents = ['asia', 'europe', 'america', 'africa', 'oceania'];
         await Promise.all(continents.map(async (continent) => {
-            // KHÔNG dùng [rows], dùng thẳng rows
-            const rows = await db.query('SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC', [continent]);
-            songsByContinent[continent] = rows;
+            try {
+                const rows = await db.query('SELECT * FROM songs WHERE continent = ? ORDER BY play_count DESC', [continent]);
+                songsByContinent[continent] = Array.isArray(rows) ? rows : [];
+            } catch (err) {
+                console.error(`Lỗi lấy nhạc ${continent}:`, err);
+                songsByContinent[continent] = [];
+            }
         }));
         res.render('explore', { songsByContinent });
-    } catch (err) { res.redirect('/'); }
+    } catch (err) {
+        console.error('Lỗi trang Khám phá:', err);
+        res.render('explore', { 
+            songsByContinent: {
+                asia: [],
+                europe: [],
+                america: [],
+                africa: [],
+                oceania: []
+            }
+        });
+    }
 });
 
 // Trang upload nhạc
