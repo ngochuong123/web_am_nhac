@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config(); // Bỏ phần path đi nếu file .env nằm cùng thư mục gốc với project
 
 async function setupStoredProcedures() {
     const pool = mysql.createPool({
