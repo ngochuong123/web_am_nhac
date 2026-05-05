@@ -201,8 +201,8 @@ router.post('/upload-song', upload.single('audioFile'), async (req, res) => {
 router.post('/history/:id', async (req, res) => {
     try {
         const songId = req.params.id;
-        // UPDATE/INSERT thì dùng execute là đúng
-        await db.execute('UPDATE songs SET play_count = play_count + 1 WHERE id = ?', [songId]);
+        // Tăng lượt nghe (Sử dụng COALESCE để tránh lỗi nếu play_count là NULL)
+        await db.execute('UPDATE songs SET play_count = COALESCE(play_count, 0) + 1 WHERE id = ?', [songId]);
 
         if (req.session.user) {
             await db.execute(
@@ -212,6 +212,7 @@ router.post('/history/:id', async (req, res) => {
         }
         res.json({ success: true });
     } catch (err) {
+        console.error('Lỗi cập nhật lượt nghe:', err);
         res.status(500).json({ success: false });
     }
 });

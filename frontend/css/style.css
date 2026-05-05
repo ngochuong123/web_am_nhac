@@ -205,7 +205,7 @@ body {
 
 .top-nav {
     display: flex;
-    gap: 35px;
+    gap: 20px;
     flex-shrink: 0;
 }
 
@@ -218,7 +218,7 @@ body {
 }
 
 .top-nav span i {
-    margin-right: 10px;
+    margin-right: 6px;
 }
 
 .top-nav span:hover,

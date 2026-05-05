@@ -12,7 +12,7 @@ const translations = {
 
         // --- Top Nav ---
         genre_menu: "Thể loại",
-        artist_menu: "Nghệ thuật",
+        artist_menu: "Nghệ sĩ",
 
         // --- Header & Auth ---
         search_placeholder: "Tìm kiếm bài hát, nghệ sĩ, thể loại...",

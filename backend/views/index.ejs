@@ -120,7 +120,11 @@
                                     </p>
                                 </div>
                                 <span class="rank-views">
-                                    <%= (song.play_count / 1000000).toFixed(1) %> <span data-lang="million">triệu</span>
+                                    <% if (song.play_count >= 1000000) { %>
+                                        <%= (song.play_count / 1000000).toFixed(1) %> <span data-lang="million">triệu</span>
+                                    <% } else { %>
+                                        <%= song.play_count.toLocaleString() %>
+                                    <% } %>
                                 </span>
                                 <div class="play-btn-small">
                                     <i class="fas fa-play"></i>
@@ -141,26 +145,12 @@
     <!-- MUSIC PLAYER BAR -->
     <%- include('partials/player') %>
 
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="loading-content">
-                <i class="fas fa-yin-yang fa-spin"></i>
-                <p data-lang="logout_loading">Đang nghịch chuyển thời không, rời khỏi tiên cảnh...</p>
-            </div>
-        </div>
-
-        <div id="transition-container" class="transition-container">
-            <video id="transition-video" preload="auto" muted playsinline>
-                <source src="/images/demo.mp4" type="video/mp4">
-            </video>
-            <div id="mist-swipe" class="mist-swipe"></div>
-        </div>
-
-        <script>
-            // Bọc trong nháy để VS Code không báo lỗi cú pháp HTML
-            window.__USER__ = <%- JSON.stringify(user || null) %>;
-        </script>
-        <script src="/js/lang.js"></script>
-        <script src="/js/script.js"></script>
+    <script>
+        // Bọc trong nháy để VS Code không báo lỗi cú pháp HTML
+        window.__USER__ = <%- JSON.stringify(user || null) %>;
+    </script>
+    <script src="/js/lang.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
