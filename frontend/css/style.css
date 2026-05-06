@@ -783,6 +783,16 @@ body {
     margin-right: 12px;
 }
 
+.rank-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
 .num-1 {
     background: #fdd835;
     color: #000;
