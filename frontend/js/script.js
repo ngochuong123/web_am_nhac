@@ -442,8 +442,8 @@ function renderLiveResults(songs) {
         if (!stateStr || !audio) return;
         try {
             const state = JSON.parse(stateStr);
-            isShuffle = state.isShuffle;
-            repeatMode = state.repeatMode;
+            isShuffle = state.isShuffle || false;
+            repeatMode = state.repeatMode || 0;
             currentSongId = state.songId;
 
             // Update Shuffle/Repeat UI
