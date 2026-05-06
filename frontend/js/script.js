@@ -281,13 +281,31 @@ function renderLiveResults(songs) {
         isPlaying = !isPlaying;
     }
 
-    function playNext() {
+    function playNext(isManual = false) {
         if (playlist.length === 0) return;
+
+        let nextIndex;
         if (isShuffle) {
-            currentPlaylistIndex = Math.floor(Math.random() * playlist.length);
+            nextIndex = Math.floor(Math.random() * playlist.length);
         } else {
-            currentPlaylistIndex = (currentPlaylistIndex + 1) % playlist.length;
+            nextIndex = currentPlaylistIndex + 1;
+            
+            // Nếu đã đến cuối danh sách
+            if (nextIndex >= playlist.length) {
+                if (repeatMode === 1 || isManual) { 
+                    // Repeat All hoặc bấm Next thủ công thì quay lại bài đầu
+                    nextIndex = 0;
+                } else {
+                    // Repeat Off (mode 0) và hết bài tự động -> Dừng phát
+                    audio.pause();
+                    isPlaying = false;
+                    if (playPauseIcon) playPauseIcon.className = 'fas fa-play';
+                    playerCover?.classList.remove('playing');
+                    return;
+                }
+            }
         }
+        currentPlaylistIndex = nextIndex;
         playSong(playlist[currentPlaylistIndex]);
     }
 
@@ -299,18 +317,36 @@ function renderLiveResults(songs) {
 
     // Gắn sự kiện cho Player Controls
     playPauseBtn?.addEventListener('click', togglePlay);
-    document.getElementById('btn-next')?.addEventListener('click', playNext);
+    document.getElementById('btn-next')?.addEventListener('click', () => playNext(true));
     document.getElementById('btn-prev')?.addEventListener('click', playPrev);
 
     // Nút Shuffle & Repeat
     document.querySelector('.fa-random')?.addEventListener('click', function () {
         isShuffle = !isShuffle;
         this.style.color = isShuffle ? '#00f2ff' : '';
+        saveAudioState();
     });
-    document.querySelector('.fa-redo-alt')?.addEventListener('click', function () {
+    
+    const repeatBtn = document.querySelector('.fa-redo-alt');
+    repeatBtn?.addEventListener('click', function () {
         repeatMode = (repeatMode + 1) % 3;
-        this.style.color = repeatMode > 0 ? '#00f2ff' : '';
+        updateRepeatUI();
+        saveAudioState();
     });
+
+    function updateRepeatUI() {
+        if (!repeatBtn) return;
+        repeatBtn.style.color = repeatMode > 0 ? '#00f2ff' : '';
+        
+        // Hiển thị số 1 nếu là Repeat One
+        if (repeatMode === 2) {
+            repeatBtn.classList.add('repeat-one');
+            repeatBtn.title = "Lặp lại 1 bài";
+        } else {
+            repeatBtn.classList.remove('repeat-one');
+            repeatBtn.title = repeatMode === 1 ? "Lặp lại tất cả" : "Không lặp lại";
+        }
+    }
 
     // Thả tim trên Card và Player
     function createHeartAnimation(e) {
@@ -413,8 +449,7 @@ function renderLiveResults(songs) {
             // Update Shuffle/Repeat UI
             const shuffleIcon = document.querySelector('.fa-random');
             if (shuffleIcon) shuffleIcon.style.color = isShuffle ? '#00f2ff' : '';
-            const repeatIcon = document.querySelector('.fa-redo-alt');
-            if (repeatIcon) repeatIcon.style.color = repeatMode > 0 ? '#00f2ff' : '';
+            updateRepeatUI();
 
             // Update Player UI
             playerBar?.classList.add('active');
