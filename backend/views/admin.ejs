@@ -149,11 +149,83 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-left: 4px solid var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 250px;
+            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.success { border-left-color: #00ff88; }
+        .toast.error { border-left-color: #ff4444; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+
+        .toast.success .toast-icon { color: #00ff88; }
+        .toast.error .toast-icon { color: #ff4444; }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-save.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-save.loading span {
+            display: none;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <!-- Toast Container -->
+        <div id="toastContainer" class="toast-container"></div>
+
         <!-- SIDEBAR -->
         <%- include('partials/sidebar') %>
 
@@ -275,7 +347,10 @@
 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal()" data-lang="cancel_btn">Hủy</button>
-                    <button type="submit" class="btn-save" data-lang="save_btn">Lưu</button>
+                    <button type="submit" class="btn-save" id="btnSave">
+                        <div class="spinner"></div>
+                        <span data-lang="save_btn">Lưu</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -284,6 +359,29 @@
     <script src="/js/lang.js"></script>
     <script>
         let currentSongId = null;
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon} toast-icon"></i>
+                <span class="toast-message">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Tự động xóa toast sau 3 giây
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
 
         function openAddModal() {
             currentSongId = null;
@@ -314,6 +412,7 @@
         async function fetchSongDetails(songId) {
             try {
                 const response = await fetch(`/api/songs/${songId}`);
+                if (!response.ok) throw new Error('Failed to fetch');
                 const song = await response.json();
 
                 document.getElementById('duration').value = song.duration;
@@ -322,6 +421,7 @@
                 document.getElementById('play_count').value = song.play_count;
             } catch (err) {
                 console.error('Lỗi lấy chi tiết bài hát:', err);
+                showToast(typeof getTranslation === 'function' ? getTranslation('error_fetching') : 'Lỗi lấy chi tiết bài hát', 'error');
             }
         }
 
@@ -330,9 +430,15 @@
         }
 
         const songFormEl = document.getElementById('songForm');
+        const btnSave = document.getElementById('btnSave');
+
         if (songFormEl) {
             songFormEl.addEventListener('submit', async (e) => {
                 e.preventDefault();
+
+                // Bật trạng thái loading
+                btnSave.classList.add('loading');
+                btnSave.disabled = true;
 
                 const formData = new FormData(e.target);
                 const songData = Object.fromEntries(formData);
@@ -377,17 +483,26 @@
                     }
 
                     if (response.ok) {
-                        closeModal();
-                        location.reload(); // Refresh page
+                        const successMsg = typeof getTranslation === 'function' ? getTranslation('save_success') : 'Lưu bài hát thành công!';
+                        showToast(successMsg, 'success');
+                        
+                        setTimeout(() => {
+                            closeModal();
+                            location.reload(); // Refresh page
+                        }, 1000);
                     } else {
                         const error = await response.json();
                         const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_saving') : 'Lỗi lưu bài hát';
-                        alert(errorMsg + ': ' + (error.message || ''));
+                        showToast(errorMsg + ': ' + (error.message || ''), 'error');
+                        btnSave.classList.remove('loading');
+                        btnSave.disabled = false;
                     }
                 } catch (err) {
                     console.error('Lỗi:', err);
                     const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_saving') : 'Lỗi lưu bài hát';
-                    alert(errorMsg);
+                    showToast(errorMsg, 'error');
+                    btnSave.classList.remove('loading');
+                    btnSave.disabled = false;
                 }
             });
         }
@@ -402,15 +517,17 @@
                 });
 
                 if (response.ok) {
-                    location.reload(); // Refresh page
+                    const successMsg = typeof getTranslation === 'function' ? getTranslation('delete_success') : 'Xóa bài hát thành công!';
+                    showToast(successMsg, 'success');
+                    setTimeout(() => location.reload(), 1000);
                 } else {
                     const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_deleting') : 'Lỗi xóa bài hát';
-                    alert(errorMsg);
+                    showToast(errorMsg, 'error');
                 }
             } catch (err) {
                 console.error('Lỗi:', err);
                 const errorMsg = typeof getTranslation === 'function' ? getTranslation('error_deleting') : 'Lỗi xóa bài hát';
-                alert(errorMsg);
+                showToast(errorMsg, 'error');
             }
         }
 

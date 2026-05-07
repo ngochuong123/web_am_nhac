@@ -139,7 +139,10 @@ const translations = {
 
         // --- Messages ---
         error_saving: "Lỗi lưu bài hát",
-        error_deleting: "Lỗi xóa bài hát"
+        error_deleting: "Lỗi xóa bài hát",
+        error_fetching: "Lỗi lấy chi tiết bài hát",
+        save_success: "Lưu bài hát thành công!",
+        delete_success: "Xóa bài hát thành công!"
     },
     en: {
         // --- Menu Sidebar ---
@@ -280,7 +283,10 @@ const translations = {
 
         // --- Messages ---
         error_saving: "Error saving song",
-        error_deleting: "Error deleting song"
+        error_deleting: "Error deleting song",
+        error_fetching: "Error fetching song details",
+        save_success: "Song saved successfully!",
+        delete_success: "Song deleted successfully!"
     }
 };
 
