@@ -23,32 +23,6 @@ Dự án được xây dựng dựa trên các "mật pháp" công nghệ hiện
 
 ---
 
-📂 Cấu trúc dự án (Project Structure)
-Dự án được tổ chức tách biệt rõ ràng giữa Backend (Logic/Server) và Frontend (Tài nguyên tĩnh):
-├── backend/                  # Khu vực xử lý Logic máy chủ & API
-│   ├── data/                 # Dữ liệu cục bộ / file tạm
-│   ├── routes/               # Điều hướng các yêu cầu HTTP
-│   │   ├── apiRoutes.js      # Xử lý Data (Login, Register, Upload...)
-│   │   └── pageRoutes.js     # Điều hướng render các trang giao diện
-│   ├── utils/                # Các tiện ích hỗ trợ
-│   │   └── uploadConfig.js   # Cấu hình Multer & Cloudinary
-│   ├── views/                # Giao diện EJS Templates
-│   │   ├── partials/         # Các thành phần tái sử dụng (header, player, sidebar)
-│   │   ├── admin.ejs         # Giao diện quản trị viên
-│   │   ├── index.ejs         # Giao diện trang chủ Tiên Cảnh
-│   │   └── (các file ejs khác: login, register, explore...)
-│   ├── database.js           # Kết nối Pool tới MySQL Aiven
-│   ├── server.js             # File khởi chạy máy chủ Express chính
-│   └── setup_sp.js           # Script khởi tạo Stored Procedures
-├── frontend/                 # Tài nguyên tĩnh phía Client (Public)
-│   ├── css/                  # File định dạng giao diện (style.css, login.css...)
-│   ├── images/               # Hình ảnh tĩnh của dự án
-│   └── js/                   # Script xử lý tương tác UI (script.js, player.js...)
-├── .env                      # Biến môi trường bảo mật (Không push lên Git)
-└── README.md                 # Tài liệu hướng dẫn (Bản hiện tại)
-
----
-
 ## 📊 Biểu đồ tuần tự (Sequence Diagrams)
 
 Dưới đây là các luồng xử lý dữ liệu chính trong hệ thống, được thiết kế theo chuẩn UML để mô phỏng sự tương tác giữa Client, Server và Database.
