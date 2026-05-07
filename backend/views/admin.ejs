@@ -7,6 +7,7 @@
     <title>Admin - Quản lý Bài hát | Diệu Âm Tiên Cảnh</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .admin-container {
             max-width: 1200px;
@@ -70,9 +71,84 @@
             color: #000;
         }
 
+        .btn-detail {
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
         .btn-delete {
             background: #ff4444;
             color: #fff;
+        }
+
+        /* Stats Modal Specific */
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            border-color: var(--accent-cyan);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .song-info-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .song-info-grid img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .info-details h3 {
+            margin: 0 0 10px 0;
+            color: var(--accent-cyan);
+        }
+
+        .info-details p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: var(--text-gray);
         }
 
         .modal {
@@ -86,16 +162,25 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
             background: var(--card-bg);
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 12px;
             width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
+            max-width: 800px;
+            max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
         }
 
         .form-group {
@@ -275,6 +360,9 @@
                                             <%= song.play_count.toLocaleString() %>
                                         </td>
                                         <td class="song-actions">
+                                            <button class="btn-detail" onclick="openStatsModal(<%= song.id %>)">
+                                                <i class="fas fa-chart-line"></i> <span data-lang="detail_btn">Chi tiết</span>
+                                            </button>
                                             <button class="btn-edit" onclick="openEditModal(<%= song.id %>)">
                                                 <i class="fas fa-edit"></i> <span data-lang="edit_btn">Sửa</span>
                                             </button>
@@ -288,6 +376,33 @@
                         </table>
                     </div>
             </main>
+    </div>
+
+    <!-- Modal Thống kê chi tiết -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="stats-header">
+                <h2 data-lang="stats_title">Thống kê bài hát</h2>
+                <div class="stats-filters">
+                    <button class="filter-btn active" onclick="changeRange('7d')" data-range="7d">7N</button>
+                    <button class="filter-btn" onclick="changeRange('30d')" data-range="30d">1T</button>
+                    <button class="filter-btn" onclick="changeRange('90d')" data-range="90d">1Q</button>
+                    <button class="filter-btn" onclick="changeRange('1y')" data-range="1y">1N</button>
+                </div>
+            </div>
+
+            <div id="songDetailInfo" class="song-info-grid">
+                <!-- Thông tin bài hát sẽ được load vào đây -->
+            </div>
+
+            <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeStatsModal()" data-lang="close_btn">Đóng</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal thêm/sửa bài hát -->
@@ -537,6 +652,135 @@
             songModalEl.addEventListener('click', (e) => {
                 if (e.target.id === 'songModal') {
                     closeModal();
+                }
+            });
+        }
+
+        // --- STATS LOGIC ---
+        let statsChart = null;
+        let activeSongId = null;
+
+        async function openStatsModal(songId) {
+            activeSongId = songId;
+            const modal = document.getElementById('statsModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+
+            // Load song info
+            await loadSongInfoForStats(songId);
+            // Initial chart load (7 days)
+            await updateChartData('7d');
+        }
+
+        function closeStatsModal() {
+            const modal = document.getElementById('statsModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 400);
+            if (statsChart) {
+                statsChart.destroy();
+                statsChart = null;
+            }
+        }
+
+        async function loadSongInfoForStats(songId) {
+            try {
+                const response = await fetch(`/api/songs/${songId}`);
+                const song = await response.json();
+                
+                const infoGrid = document.getElementById('songDetailInfo');
+                infoGrid.innerHTML = `
+                    <img src="${song.cover_url || '/images/default-cover.jpg'}" alt="${song.title}">
+                    <div class="info-details">
+                        <h3>${song.title}</h3>
+                        <p><strong>Nghệ sĩ:</strong> ${song.artist}</p>
+                        <p><strong>Thể loại:</strong> ${song.genre}</p>
+                        <p><strong>Châu lục:</strong> ${song.continent}</p>
+                        <p><strong>Tổng lượt nghe:</strong> ${song.play_count.toLocaleString()}</p>
+                    </div>
+                `;
+            } catch (err) {
+                console.error('Lỗi load info:', err);
+            }
+        }
+
+        async function changeRange(range) {
+            // Update UI buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.range === range);
+            });
+            await updateChartData(range);
+        }
+
+        async function updateChartData(range) {
+            try {
+                const response = await fetch(`/api/songs/${activeSongId}/stats?range=${range}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderChart(data.stats, range);
+                }
+            } catch (err) {
+                console.error('Lỗi load stats:', err);
+            }
+        }
+
+        function renderChart(stats, range) {
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            
+            if (statsChart) {
+                statsChart.destroy();
+            }
+
+            const labels = stats.map(s => s.date);
+            const values = stats.map(s => s.count);
+
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lượt nghe',
+                        data: values,
+                        borderColor: '#00f2ff',
+                        backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#00f2ff',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#a0a0a0' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#a0a0a0' }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Đóng stats modal khi click outside
+        const statsModalEl = document.getElementById('statsModal');
+        if (statsModalEl) {
+            statsModalEl.addEventListener('click', (e) => {
+                if (e.target.id === 'statsModal') {
+                    closeStatsModal();
                 }
             });
         }

@@ -118,12 +118,15 @@ const translations = {
         continent_col: "Châu lục",
         plays_col: "Lượt nghe",
         actions_col: "Thao tác",
+        detail_btn: "Chi tiết",
         edit_btn: "Sửa",
         delete_btn: "Xóa",
         save_btn: "Lưu",
         cancel_btn: "Hủy",
+        close_btn: "Đóng",
         add_new_title: "Thêm bài hát mới",
         edit_song_title: "Sửa bài hát",
+        stats_title: "Thống kê bài hát",
         confirm_delete: "Bạn có chắc muốn xóa bài hát này?",
 
         // --- Form Labels ---
@@ -262,12 +265,15 @@ const translations = {
         continent_col: "Continent",
         plays_col: "Plays",
         actions_col: "Actions",
+        detail_btn: "Details",
         edit_btn: "Edit",
         delete_btn: "Delete",
         save_btn: "Save",
         cancel_btn: "Cancel",
+        close_btn: "Close",
         add_new_title: "Add New Song",
         edit_song_title: "Edit Song",
+        stats_title: "Song Statistics",
         confirm_delete: "Are you sure you want to delete this song?",
 
         // --- Form Labels ---

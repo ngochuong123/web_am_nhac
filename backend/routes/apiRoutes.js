@@ -303,6 +303,52 @@ router.put('/songs/:id', async (req, res) => {
     }
 });
 
+router.get('/songs/:id/stats', async (req, res) => {
+    try {
+        const songId = req.params.id;
+        const { range = '7d' } = req.query;
+        
+        let interval;
+        let dateFormat;
+        let limit;
+
+        switch (range) {
+            case '30d':
+                interval = 'INTERVAL 30 DAY';
+                dateFormat = '%Y-%m-%d';
+                limit = 30;
+                break;
+            case '90d':
+                interval = 'INTERVAL 90 DAY';
+                dateFormat = '%Y-%u'; // Theo tuần
+                limit = 13;
+                break;
+            case '1y':
+                interval = 'INTERVAL 1 YEAR';
+                dateFormat = '%Y-%m';
+                limit = 12;
+                break;
+            default: // 7d
+                interval = 'INTERVAL 7 DAY';
+                dateFormat = '%Y-%m-%d';
+                limit = 7;
+        }
+
+        const stats = await db.query(`
+            SELECT DATE_FORMAT(played_at, ?) as date, COUNT(*) as count
+            FROM play_history
+            WHERE song_id = ? AND played_at >= DATE_SUB(NOW(), ${interval})
+            GROUP BY date
+            ORDER BY date ASC
+        `, [dateFormat, songId]);
+
+        res.json({ success: true, stats });
+    } catch (err) {
+        console.error('Lỗi lấy thống kê:', err);
+        res.status(500).json({ success: false });
+    }
+});
+
 router.delete('/songs/:id', async (req, res) => {
     try {
         await db.execute('DELETE FROM songs WHERE id = ?', [req.params.id]);
