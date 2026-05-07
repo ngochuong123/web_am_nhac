@@ -28,25 +28,25 @@ Dự án được xây dựng dựa trên các "mật pháp" công nghệ hiện
 Dưới đây là các luồng xử lý dữ liệu chính trong hệ thống, được thiết kế theo chuẩn UML để mô phỏng sự tương tác giữa Client, Server và Database.
 
 ### 1. Luồng Đăng ký & Bảo mật Bcrypt
-![Sơ đồ Đăng ký]<img width="8155" height="5335" alt="register" src="https://github.com/user-attachments/assets/3e7fb8b7-2cc0-44d0-b4c1-6ac59aa38b0d" />
+<img width="8155" height="5335" alt="register" src="https://github.com/user-attachments/assets/3e7fb8b7-2cc0-44d0-b4c1-6ac59aa38b0d" />
 
 
 
 ### 2. Luồng Đăng nhập & Xác thực Session
-![Sơ đồ Đăng nhập]<img width="8192" height="5003" alt="login" src="https://github.com/user-attachments/assets/db0ed5ec-ba10-4155-9728-54b13bb7ded9" />
+<img width="8192" height="5003" alt="login" src="https://github.com/user-attachments/assets/db0ed5ec-ba10-4155-9728-54b13bb7ded9" />
 
 
 ### 3. Luồng Tìm kiếm linh hoạt (Search & Debounce)
-![Sơ đồ Tìm kiếm]<img width="8192" height="4302" alt="seach" src="https://github.com/user-attachments/assets/62ef2ed2-d13a-41d9-83ff-ff7fd35d5b55" />
+<img width="8192" height="4302" alt="seach" src="https://github.com/user-attachments/assets/62ef2ed2-d13a-41d9-83ff-ff7fd35d5b55" />
 
 
 ### 4. Luồng Quản lý bài hát (Admin CRUD)
-![Sơ đồ Admin CRUD]<img width="6743" height="8191" alt="admin" src="https://github.com/user-attachments/assets/804ccfd3-0f50-45fd-9b9a-00ee726785cb" />
+<img width="6743" height="8191" alt="admin" src="https://github.com/user-attachments/assets/804ccfd3-0f50-45fd-9b9a-00ee726785cb" />
 
 
 ### 5. Luồng Thả tim / Yêu thích bài hát (Favorite)
-![Sơ đồ Thả tim]<img width="7787" height="4785" alt="yêu thích" src="https://github.com/user-attachments/assets/c8905abc-0e09-4bf5-b799-6cb90a823071" />
+<img width="7787" height="4785" alt="yêu thích" src="https://github.com/user-attachments/assets/c8905abc-0e09-4bf5-b799-6cb90a823071" />
 
 ### 6. Luồng danh sách bài hát
-![Sơ đồ danh sách<img width="8192" height="2758" alt="danh_sách_nhạc" src="https://github.com/user-attachments/assets/68ceec8e-83d9-48de-a777-21c9fffd9bce" />
-]
+<img width="8192" height="2758" alt="danh_sách_nhạc" src="https://github.com/user-attachments/assets/68ceec8e-83d9-48de-a777-21c9fffd9bce" />
+
